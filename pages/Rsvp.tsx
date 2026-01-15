@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-
-// Mock database to simulate group retreival
-const MOCK_FAMILIES: Record<string, string[]> = {
-  "dario": ["Dario", "Daniele", "Gemma"],
-  "elena": ["Elena", "Giulia"],
-  "rossi": ["Mario Rossi", "Anna Verdi", "Luca Rossi"],
-};
+import { supabase } from '../lib/supabase';
 
 interface GuestState {
   name: string;
@@ -19,21 +13,18 @@ const Rsvp: React.FC = () => {
   const [guests, setGuests] = useState<GuestState[]>([]);
   const [accommodation, setAccommodation] = useState<string>('');
   const [transport, setTransport] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string>('');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchName.trim()) return;
 
-    // Normalize search to lower case for mock matching
-    const key = searchName.toLowerCase().trim();
-    
-    // Find group in mock DB or create a single guest entry if not found
-    const familyNames = Object.keys(MOCK_FAMILIES).find(k => k.includes(key) || key.includes(k)) 
-      ? MOCK_FAMILIES[key] || MOCK_FAMILIES[Object.keys(MOCK_FAMILIES).find(k => key.includes(k))!]
-      : [searchName.trim()]; // Fallback: just the typed name
-
-    setGuests(familyNames.map(name => ({ name, isAttending: true, dietaryNotes: '' })));
+    // For now, create a single guest entry based on search
+    // In future, you could query Supabase for pre-invited families
+    setGuests([{ name: searchName.trim(), isAttending: true, dietaryNotes: '' }]);
     setStep('form');
+    setError('');
   };
 
   const updateGuest = (index: number, field: keyof GuestState, value: any) => {
@@ -42,11 +33,46 @@ const Rsvp: React.FC = () => {
     setGuests(newGuests);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would send { guests, accommodation, transport } to your backend
-    console.log({ guests, accommodation, transport });
-    setStep('success');
+    setIsSubmitting(true);
+    setError('');
+
+    try {
+      const familyGroup = searchName.trim();
+
+      // Insert RSVP submission
+      const { error: submissionError } = await supabase
+        .from('rsvp_submissions')
+        .insert({
+          family_group: familyGroup,
+          accommodation_notes: accommodation,
+          transport_notes: transport,
+        });
+
+      if (submissionError) throw submissionError;
+
+      // Insert all guests
+      const guestsToInsert = guests.map(guest => ({
+        name: guest.name,
+        family_group: familyGroup,
+        is_attending: guest.isAttending,
+        dietary_notes: guest.dietaryNotes || null,
+      }));
+
+      const { error: guestsError } = await supabase
+        .from('guests')
+        .insert(guestsToInsert);
+
+      if (guestsError) throw guestsError;
+
+      setStep('success');
+    } catch (err: any) {
+      console.error('Error submitting RSVP:', err);
+      setError(err.message || 'Errore durante l\'invio. Riprova.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -94,9 +120,6 @@ const Rsvp: React.FC = () => {
                   <button type="submit" className="bg-secondary text-white font-serif text-xl font-bold py-5 rounded-full hover:bg-primary shadow-lg hover:shadow-xl transition-all mt-4">
                     Cerca Invito
                   </button>
-                  <p className="text-sm text-center text-gray-500 italic mt-2">
-                    (Prova a cercare "Dario" per vedere la demo del gruppo)
-                  </p>
                </form>
             </div>
           )}
@@ -233,6 +256,12 @@ const Rsvp: React.FC = () => {
                  </div>
                )}
 
+               {error && (
+                 <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-center">
+                   {error}
+                 </div>
+               )}
+
                <div className="flex gap-4 pt-6">
                  <button 
                     type="button" 
@@ -243,9 +272,10 @@ const Rsvp: React.FC = () => {
                  </button>
                  <button 
                     type="submit" 
-                    className="flex-[2] bg-primary text-white font-sans text-lg font-bold uppercase tracking-widest py-4 rounded-full hover:bg-[#b08d4b] shadow-lg hover:shadow-xl transition-all"
+                    disabled={isSubmitting}
+                    className="flex-[2] bg-primary text-white font-sans text-lg font-bold uppercase tracking-widest py-4 rounded-full hover:bg-[#b08d4b] shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                  >
-                    Conferma RSVP
+                    {isSubmitting ? 'Invio in corso...' : 'Conferma RSVP'}
                  </button>
                </div>
              </form>

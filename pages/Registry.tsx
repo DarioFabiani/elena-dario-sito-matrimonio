@@ -1,6 +1,58 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../lib/supabase';
 
 const Registry: React.FC = () => {
+  const [songInput, setSongInput] = useState('');
+  const [recentSongs, setRecentSongs] = useState<{ id: number; song_name: string; created_at: string }[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Load recent songs
+  useEffect(() => {
+    loadRecentSongs();
+  }, []);
+
+  const loadRecentSongs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('song_requests')
+        .select('id, song_name, created_at')
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (error) throw error;
+      setRecentSongs(data || []);
+    } catch (err) {
+      console.error('Error loading songs:', err);
+    }
+  };
+
+  const handleAddSong = async () => {
+    if (!songInput.trim() || isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase
+        .from('song_requests')
+        .insert({ song_name: songInput.trim() });
+
+      if (error) throw error;
+
+      setSongInput('');
+      await loadRecentSongs(); // Reload the list
+    } catch (err) {
+      console.error('Error adding song:', err);
+      alert('Errore nell\'aggiungere la canzone. Riprova.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleAddSong();
+    }
+  };
+
   return (
     <div className="bg-paper min-h-screen flex flex-col items-center justify-center py-20 relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #C5A059 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
@@ -23,23 +75,38 @@ const Registry: React.FC = () => {
                 <div className="w-full relative mb-8">
                     <input 
                         type="text" 
+                        value={songInput}
+                        onChange={(e) => setSongInput(e.target.value)}
+                        onKeyPress={handleKeyPress}
                         placeholder="Artista - Titolo Canzone" 
                         className="w-full h-16 pl-6 pr-16 rounded-2xl bg-white shadow-lg shadow-secondary/5 border border-gray-100 outline-none focus:ring-2 focus:ring-secondary/50 text-gray-800 placeholder:text-gray-400 font-sans text-lg"
+                        disabled={isSubmitting}
                     />
-                    <button className="absolute right-3 top-3 bottom-3 w-12 bg-secondary hover:bg-primary text-white rounded-xl flex items-center justify-center transition-colors shadow-md">
-                        <span className="material-icons text-2xl">add</span>
+                    <button 
+                        onClick={handleAddSong}
+                        disabled={isSubmitting || !songInput.trim()}
+                        className="absolute right-3 top-3 bottom-3 w-12 bg-secondary hover:bg-primary text-white rounded-xl flex items-center justify-center transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <span className="material-icons text-2xl">{isSubmitting ? 'hourglass_empty' : 'add'}</span>
                     </button>
                 </div>
                 
                 <div className="space-y-3 w-full opacity-90">
-                     <div className="flex items-center gap-3 bg-white/80 p-3 rounded-lg border border-gray-100 shadow-sm">
-                        <span className="material-icons text-gray-400 text-base">history</span>
-                        <span className="text-sm text-gray-600 font-medium">Dancing Queen - ABBA</span>
-                     </div>
-                     <div className="flex items-center gap-3 bg-white/80 p-3 rounded-lg border border-gray-100 shadow-sm">
-                        <span className="material-icons text-gray-400 text-base">history</span>
-                        <span className="text-sm text-gray-600 font-medium">September - Earth, Wind & Fire</span>
-                     </div>
+                     {recentSongs.length > 0 ? (
+                       recentSongs.map((song) => (
+                         <div key={song.id} className="flex items-center gap-3 bg-white/80 p-3 rounded-lg border border-gray-100 shadow-sm animate-fade-in-up">
+                           <span className="material-icons text-gray-400 text-base">music_note</span>
+                           <span className="text-sm text-gray-600 font-medium">{song.song_name}</span>
+                         </div>
+                       ))
+                     ) : (
+                       <>
+                         <div className="flex items-center gap-3 bg-white/80 p-3 rounded-lg border border-gray-100 shadow-sm">
+                           <span className="material-icons text-gray-400 text-base">history</span>
+                           <span className="text-sm text-gray-400 font-medium italic">Nessuna canzone ancora... Sii il primo!</span>
+                         </div>
+                       </>
+                     )}
                 </div>
             </div>
 
