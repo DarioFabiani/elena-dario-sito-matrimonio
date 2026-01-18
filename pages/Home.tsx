@@ -8,13 +8,28 @@ const Home: React.FC = () => {
   return (
     <div className="relative min-h-screen w-full flex flex-col items-center justify-center pt-24 md:pt-0 overflow-hidden bg-[#FDFBF7]">
       
-      {/* Main Image Container */}
-      <div className="relative z-10 w-full max-w-5xl px-4 md:px-8 flex items-center justify-center">
+      {/* Main Image Container with Text Overlay */}
+      <div className="relative z-10 w-full flex items-center justify-center">
         <img 
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2EJb8sFtqumDR9tsx8q0gOT8kyO2vt2McADTNiiSiv4z93sb7EUDlb78cCrOxtQWdm0V70KhuYwrQ3cd0Cno5Ajnl9Er3rTPI8II-6UabIonSrwMpdaPlbNtF-R90P4pYXYa07jzPByTKOa95qBZ0xaYCoMiUj5yEzjOq73UqUknHD70ubd52hZHe2knxneJ0qf1EL8hWrfs-aoytNfpg6qUld1GgXU_IaPUcvk_uYxT6sirsY0vqi4MVISrdvLAB2koGvNwAZ_bY"
+          src="https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/E+D_base.jpg"
           alt="Elena & Dario - Save the Date"
-          className="w-full h-auto max-h-[70vh] object-contain drop-shadow-sm rounded-lg"
+          className="w-full h-auto max-h-[70vh] object-cover"
         />
+        
+        {/* Wedding Text Overlay */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="text-center animate-fade-in-up" style={{ marginTop: '-4%' }}>
+            <h1 className="text-4xl md:text-6xl text-secondary font-display mb-3 md:mb-4">
+              Elena & Dario
+            </h1>
+            <p className="text-xl md:text-2xl text-secondary font-serif mb-1 md:mb-2">
+              30 Maggio 2026
+            </p>
+            <p className="text-lg md:text-xl text-secondary/80 font-serif">
+              Marina di Pisciotta (SA)
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* RSVP Button - Positioned below image */}

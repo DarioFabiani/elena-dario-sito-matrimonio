@@ -4,37 +4,37 @@ import React, { useState, useEffect } from 'react';
 const PHOTOS = [
   {
     id: 1,
-    src: "https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=2070&auto=format&fit=crop",
+    src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/elena_love.JPEG",
     alt: "Walking together",
     caption: "Il nostro primo viaggio"
   },
   {
     id: 2,
-    src: "https://images.unsplash.com/photo-1511285560982-1356c11d4606?q=80&w=2076&auto=format&fit=crop",
+    src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/IMG_1207.JPEG",
     alt: "Sunset embrace",
     caption: "Golden hour"
   },
   {
     id: 3,
-    src: "https://images.unsplash.com/photo-1623789397669-733161bb7d08?q=80&w=2070&auto=format&fit=crop",
+    src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/IMG_3825.JPEG",
     alt: "Beach walk",
     caption: "Dove tutto è iniziato"
   },
   {
     id: 4,
-    src: "https://images.unsplash.com/photo-1522673607200-1645062cd958?q=80&w=2043&auto=format&fit=crop",
+    src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/IMG_8323.JPEG",
     alt: "Holding hands",
     caption: "Insieme"
   },
   {
     id: 5,
-    src: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=2070&auto=format&fit=crop",
+    src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/IMG_1277.JPEG",
     alt: "Celebration",
     caption: "Gioia Pura"
   },
   {
     id: 6,
-    src: "https://images.unsplash.com/photo-1529636798458-92182e662485?q=80&w=2069&auto=format&fit=crop",
+    src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/IMG_7724.JPEG",
     alt: "Portrait",
     caption: "Noi"
   }
