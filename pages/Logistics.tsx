@@ -24,7 +24,7 @@ const Logistics: React.FC = () => {
         <div className="text-center mb-16">
            <span className="text-primary font-bold tracking-[0.3em] uppercase text-sm mb-3 block">Informazioni Utili</span>
            <h2 className="text-6xl md:text-7xl text-secondary font-display mb-6">Info & Logistica</h2>
-           <p className="text-gray-700 font-serif max-w-2xl mx-auto text-xl font-medium">Tutto quello che c'è da sapere per raggiungere la location e godersi la festa senza pensieri.</p>
+           <p className="text-gray-700 font-serif max-w-2xl mx-auto text-xl font-medium">Tutto quello che c'è da sapere per raggiungere la location e godersi la festa.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -47,7 +47,7 @@ const Logistics: React.FC = () => {
                   <ul className="list-disc list-inside pl-2 text-base space-y-2 mt-2 opacity-90">
                     <li>Stazione → Hotel</li>
                     <li>Hotel → Chiesa → Ricevimento</li>
-                    <li>Ricevimento → Hotel/Stazione (a fine serata)</li>
+                    <li>Ricevimento → Hotel</li>
                   </ul>
                 </div>
 
@@ -82,11 +82,11 @@ const Logistics: React.FC = () => {
                 <ul className="space-y-3 text-base mt-3">
                   <li className="flex justify-between border-b border-gray-200 pb-2">
                     <span>Camera doppia</span>
-                    <span className="font-bold text-secondary">50€ /persona</span>
+                    <span className="font-bold text-secondary">50€ p.p./notte</span>
                   </li>
                   <li className="flex justify-between border-b border-gray-200 pb-2">
                     <span>3°, 4°, 5° letto</span>
-                    <span className="font-bold text-secondary">30€ /persona</span>
+                    <span className="font-bold text-secondary">30€ p.p./notte</span>
                   </li>
                 </ul>
                 <p className="text-sm text-gray-600 mt-4 italic">Il villaggio offre piscina, spiaggia, animazione e aree relax.</p>
@@ -103,12 +103,12 @@ const Logistics: React.FC = () => {
                    <ul className="space-y-4">
                      <li className="flex items-center gap-4 justify-center md:justify-start">
                         <span className="material-icons text-tertiary text-3xl">checkroom</span>
-                        <span className="text-lg">Un maglioncino o scialle per la sera (l'umidità può farsi sentire).</span>
+                        <span className="text-lg">La cena sarà all'aperto - consigliato abbigliamento adatto alle temperature serali</span>
                      </li>
-                     <li className="flex items-center gap-4 justify-center md:justify-start">
-                        <span className="material-icons text-tertiary text-3xl">do_not_step</span>
-                        <span className="text-lg">Scarpe comode per scatenarvi in pista! 💃🕺</span>
-                     </li>
+                    <li className="flex items-center gap-4 justify-center md:justify-start">
+                      <span className="material-icons text-tertiary text-3xl">nightlife</span>
+                      <span className="text-lg">Pro tip: scarpe comode. Il DJ non avrà pietà</span>
+                    </li>
                    </ul>
                 </div>
               </div>

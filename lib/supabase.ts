@@ -11,19 +11,18 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Database types
 export interface Guest {
-  id?: number;
+  id: number;
   name: string;
-  family_group: string;
-  is_attending: boolean;
-  dietary_notes?: string;
+  group_name: string;
   created_at?: string;
 }
 
-export interface RsvpSubmission {
+export interface GuestResponse {
   id?: number;
-  family_group: string;
-  accommodation_notes?: string;
-  transport_notes?: string;
+  guest_id: number;
+  is_attending: boolean;
+  dietary_notes?: string;
+  transport_method?: string;
   submitted_at?: string;
 }
 

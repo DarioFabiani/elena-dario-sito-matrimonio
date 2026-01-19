@@ -33,25 +33,24 @@ const Home: React.FC = () => {
       </div>
 
       {/* RSVP Button - Positioned below image */}
-      <div className="relative z-20 mt-8 animate-fade-in-up">
+      <div className="relative z-20 mt-8 animate-fade-in-up flex flex-col items-center gap-6">
         <button 
           onClick={scrollToRsvp}
           className="bg-primary hover:bg-[#b08d4b] text-white font-sans uppercase text-xs tracking-[0.2em] px-12 py-4 rounded-full shadow-lg transition-all hover:scale-105 active:scale-95"
         >
           Conferma Presenza
         </button>
+        {/* Scroll Indicator aligned with button */}
+        <div className="flex flex-col items-center gap-1 opacity-40 animate-bounce">
+          <span className="text-[10px] uppercase tracking-widest text-secondary font-sans">Scorri</span>
+          <span className="material-icons text-secondary text-lg">keyboard_arrow_down</span>
+        </div>
       </div>
 
       {/* Background Decor (Subtle) */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
-      </div>
-
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-1 opacity-40 animate-bounce z-20">
-        <span className="text-[10px] uppercase tracking-widest text-secondary font-sans">Scorri</span>
-        <span className="material-icons text-secondary text-lg">keyboard_arrow_down</span>
       </div>
     </div>
   );

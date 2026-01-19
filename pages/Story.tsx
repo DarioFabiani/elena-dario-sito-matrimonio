@@ -28,7 +28,7 @@ const Story: React.FC = () => {
             </div>
             <h3 className="font-serif text-3xl font-bold text-secondary mb-4">L'Amicizia</h3>
             <p className="text-gray-800 leading-relaxed text-lg font-medium">
-              Negli anni dell'università le nostre strade si incrociarono grazie a un sorteggio casuale, dopo cui rimasero un bel voto e una bella amicizia.     
+              Le nostre strade si sono incrociate all'università, grazie a un sorteggio e un esame che ci ha resi amici.     
               </p>
           </div>
 
@@ -39,7 +39,7 @@ const Story: React.FC = () => {
             </div>
             <h3 className="font-serif text-3xl font-bold text-secondary mb-4">L'Amore</h3>
             <p className="text-gray-800 leading-relaxed text-lg font-medium">
-              Anni dopo, sullo sfondo delle montagne trentine, quell'amicizia cominciò a trasformarsi, avvicinandoci sempre di più.
+              Anni dopo, sullo sfondo delle montagne trentine, quell'amicizia si è trasformata, avvicinandoci sempre di più.
             </p>
           </div>
 

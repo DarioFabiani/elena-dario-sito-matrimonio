@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase, Guest, GuestResponse } from '../lib/supabase';
 
-interface GuestState {
-  name: string;
+interface GuestFormState {
+  guest: Guest;
   isAttending: boolean;
   dietaryNotes: string;
 }
@@ -10,27 +10,75 @@ interface GuestState {
 const Rsvp: React.FC = () => {
   const [step, setStep] = useState<'search' | 'form' | 'success'>('search');
   const [searchName, setSearchName] = useState('');
-  const [guests, setGuests] = useState<GuestState[]>([]);
-  const [accommodation, setAccommodation] = useState<string>('');
+  const [groupName, setGroupName] = useState('');
+  const [guestForms, setGuestForms] = useState<GuestFormState[]>([]);
   const [transport, setTransport] = useState<string>('');
+  const [isSearching, setIsSearching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>('');
+  const [searchError, setSearchError] = useState<string>('');
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchName.trim()) return;
 
-    // For now, create a single guest entry based on search
-    // In future, you could query Supabase for pre-invited families
-    setGuests([{ name: searchName.trim(), isAttending: true, dietaryNotes: '' }]);
-    setStep('form');
-    setError('');
+    setIsSearching(true);
+    setSearchError('');
+
+    try {
+      // Search for guests whose name contains the search term (case insensitive)
+      const { data: matchingGuests, error: searchErr } = await supabase
+        .from('guests')
+        .select('*')
+        .ilike('name', `%${searchName.trim()}%`);
+
+      if (searchErr) throw searchErr;
+
+      if (!matchingGuests || matchingGuests.length === 0) {
+        setSearchError('Nessun invitato trovato con questo nome. Prova con un altro nome o cognome.');
+        return;
+      }
+
+      // Get the group name from the first match
+      const foundGroupName = matchingGuests[0].group_name;
+
+      // Now fetch all guests in this group
+      const { data: groupGuests, error: groupErr } = await supabase
+        .from('guests')
+        .select('*')
+        .eq('group_name', foundGroupName)
+        .order('id');
+
+      if (groupErr) throw groupErr;
+
+      if (!groupGuests || groupGuests.length === 0) {
+        setSearchError('Errore nel recupero del gruppo. Riprova.');
+        return;
+      }
+
+      // Initialize form state for each guest
+      const formStates: GuestFormState[] = groupGuests.map((guest) => ({
+        guest,
+        isAttending: true,
+        dietaryNotes: '',
+      }));
+
+      setGroupName(foundGroupName);
+      setGuestForms(formStates);
+      setStep('form');
+      setError('');
+    } catch (err: any) {
+      console.error('Error searching guests:', err);
+      setSearchError('Errore durante la ricerca. Riprova.');
+    } finally {
+      setIsSearching(false);
+    }
   };
 
-  const updateGuest = (index: number, field: keyof GuestState, value: any) => {
-    const newGuests = [...guests];
-    newGuests[index] = { ...newGuests[index], [field]: value };
-    setGuests(newGuests);
+  const updateGuestForm = (index: number, field: keyof Omit<GuestFormState, 'guest'>, value: any) => {
+    const newForms = [...guestForms];
+    newForms[index] = { ...newForms[index], [field]: value };
+    setGuestForms(newForms);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,32 +87,22 @@ const Rsvp: React.FC = () => {
     setError('');
 
     try {
-      const familyGroup = searchName.trim();
-
-      // Insert RSVP submission
-      const { error: submissionError } = await supabase
-        .from('rsvp_submissions')
-        .insert({
-          family_group: familyGroup,
-          accommodation_notes: accommodation,
-          transport_notes: transport,
-        });
-
-      if (submissionError) throw submissionError;
-
-      // Insert all guests
-      const guestsToInsert = guests.map(guest => ({
-        name: guest.name,
-        family_group: familyGroup,
-        is_attending: guest.isAttending,
-        dietary_notes: guest.dietaryNotes || null,
+      // Prepare responses for all guests
+      const responses: GuestResponse[] = guestForms.map((form) => ({
+        guest_id: form.guest.id,
+        is_attending: form.isAttending,
+        dietary_notes: form.dietaryNotes || null,
+        transport_method: form.isAttending ? transport : null,
       }));
 
-      const { error: guestsError } = await supabase
-        .from('guests')
-        .insert(guestsToInsert);
+      // Upsert responses (insert or update if already exists)
+      for (const response of responses) {
+        const { error: upsertError } = await supabase
+          .from('guest_responses')
+          .upsert(response, { onConflict: 'guest_id' });
 
-      if (guestsError) throw guestsError;
+        if (upsertError) throw upsertError;
+      }
 
       setStep('success');
     } catch (err: any) {
@@ -74,6 +112,18 @@ const Rsvp: React.FC = () => {
       setIsSubmitting(false);
     }
   };
+
+  const resetForm = () => {
+    setStep('search');
+    setSearchName('');
+    setGroupName('');
+    setGuestForms([]);
+    setTransport('');
+    setError('');
+    setSearchError('');
+  };
+
+  const attendingCount = guestForms.filter(f => f.isAttending).length;
 
   return (
     <div className="bg-background min-h-screen flex items-center justify-center py-20 relative overflow-hidden text-gray-800">
@@ -100,75 +150,106 @@ const Rsvp: React.FC = () => {
 
         <section className="w-full bg-white rounded-[2rem] p-6 md:p-10 shadow-2xl border border-primary/20 relative overflow-hidden transition-all duration-500">
           
+          {/* STEP 1: Search */}
           {step === 'search' && (
             <div className="animate-fade-in-up">
                <div className="text-center mb-10">
                   <span className="material-icons text-5xl text-primary mb-4">person_search</span>
                   <h3 className="font-serif text-3xl text-secondary font-bold">Cerca il tuo invito</h3>
-                  <p className="text-gray-600 text-lg font-medium mt-3">Inserisci il tuo nome (o cognome) per trovare il tuo nucleo familiare.</p>
+                  <p className="text-gray-600 text-lg font-medium mt-3">Inserisci il tuo nome o cognome per trovare il tuo invito.</p>
                </div>
                
                <form onSubmit={handleSearch} className="flex flex-col gap-6">
                   <input 
                     className="w-full border-b-2 border-gray-300 bg-transparent py-4 px-2 text-secondary placeholder:text-gray-400 focus:border-primary focus:outline-none text-2xl font-serif text-center transition-colors font-bold" 
-                    placeholder="es. Dario" 
+                    placeholder="es. Mario Rossi" 
                     type="text" 
                     value={searchName}
                     onChange={(e) => setSearchName(e.target.value)}
                     required
+                    disabled={isSearching}
                   />
-                  <button type="submit" className="bg-secondary text-white font-serif text-xl font-bold py-5 rounded-full hover:bg-primary shadow-lg hover:shadow-xl transition-all mt-4">
-                    Cerca Invito
+
+                  {searchError && (
+                    <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-center flex items-center justify-center gap-2">
+                      <span className="material-icons text-xl">warning</span>
+                      {searchError}
+                    </div>
+                  )}
+
+                  <button 
+                    type="submit" 
+                    disabled={isSearching}
+                    className="bg-secondary text-white font-serif text-xl font-bold py-5 rounded-full hover:bg-primary shadow-lg hover:shadow-xl transition-all mt-4 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                  >
+                    {isSearching ? (
+                      <>
+                        <span className="material-icons animate-spin">autorenew</span>
+                        Ricerca in corso...
+                      </>
+                    ) : (
+                      'Cerca Invito'
+                    )}
                   </button>
                </form>
             </div>
           )}
 
+          {/* STEP 2: Form */}
           {step === 'form' && (
              <form onSubmit={handleSubmit} className="animate-fade-in-up space-y-12">
                
+               {/* Group Header */}
+               <div className="text-center pb-6 border-b border-primary/20">
+                 <p className="text-sm uppercase tracking-widest text-gray-500 font-bold mb-2">Invito trovato</p>
+                 <h3 className="font-display text-4xl text-secondary">{groupName}</h3>
+                 <p className="text-gray-600 mt-2 font-serif">
+                   {guestForms.length} {guestForms.length === 1 ? 'invitato' : 'invitati'} in questo gruppo
+                 </p>
+               </div>
+
                {/* Guest List Section */}
                <div className="space-y-6">
                  <div className="flex items-center gap-3 mb-6 border-b-2 border-primary/10 pb-3">
                     <span className="material-icons text-primary text-3xl">groups</span>
-                    <h3 className="font-bold text-secondary uppercase text-base tracking-widest">Ospiti</h3>
+                    <h3 className="font-bold text-secondary uppercase text-base tracking-widest">Conferma Presenze</h3>
                  </div>
                  
-                 {guests.map((guest, index) => (
-                   <div key={index} className="bg-paper p-6 rounded-2xl border border-primary/20 hover:border-primary/40 transition-colors shadow-sm">
+                 {guestForms.map((form, index) => (
+                   <div key={form.guest.id} className="bg-paper p-6 rounded-2xl border border-primary/20 hover:border-primary/40 transition-colors shadow-sm">
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-4">
-                        <span className="font-display text-4xl text-secondary">{guest.name}</span>
+                        <span className="font-display text-4xl text-secondary">{form.guest.name}</span>
                         
                         {/* Attendance Toggle */}
                         <div className="flex bg-white rounded-full p-1.5 shadow-sm border border-gray-200 shrink-0">
                           <button
                             type="button"
-                            onClick={() => updateGuest(index, 'isAttending', true)}
-                            className={`px-6 py-2 rounded-full text-base font-bold transition-all ${guest.isAttending ? 'bg-primary text-white shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
+                            onClick={() => updateGuestForm(index, 'isAttending', true)}
+                            className={`px-6 py-2 rounded-full text-base font-bold transition-all ${form.isAttending ? 'bg-primary text-white shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
                           >
                             Ci sarò
                           </button>
                           <button
                             type="button"
-                            onClick={() => updateGuest(index, 'isAttending', false)}
-                            className={`px-6 py-2 rounded-full text-base font-bold transition-all ${!guest.isAttending ? 'bg-secondary text-white shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
+                            onClick={() => updateGuestForm(index, 'isAttending', false)}
+                            className={`px-6 py-2 rounded-full text-base font-bold transition-all ${!form.isAttending ? 'bg-secondary text-white shadow-md' : 'text-gray-500 hover:text-gray-700'}`}
                           >
                             Non ci sarò
                           </button>
                         </div>
                       </div>
 
-                      {/* Allergies - Only visible if attending */}
-                      {guest.isAttending && (
+                      {/* Dietary Notes - Only visible if attending */}
+                      {form.isAttending && (
                         <div className="mt-4 animate-fade-in-up bg-white p-4 rounded-xl border border-gray-100">
                           <label className="text-sm font-bold text-gray-700 uppercase tracking-wider block mb-2 flex items-center gap-2">
-                            <span className="material-icons text-lg text-primary">restaurant_menu</span> Allergie o Intolleranze
+                            <span className="material-icons text-lg text-primary">restaurant_menu</span> Esigenze Alimentari
                           </label>
                           <input 
                             type="text"
-                            value={guest.dietaryNotes}
-                            onChange={(e) => updateGuest(index, 'dietaryNotes', e.target.value)}
-                            placeholder="Scrivi qui (es. Celiachia, Vegano...)"
+                            value={form.dietaryNotes}
+                            onChange={(e) => updateGuestForm(index, 'dietaryNotes', e.target.value)}
+                            placeholder="Allergie, intolleranze, dieta vegetariana/vegana..."
                             className="w-full bg-gray-50 border-b-2 border-gray-200 py-3 px-4 text-base md:text-lg text-gray-900 focus:border-primary focus:bg-white focus:outline-none transition-all rounded-lg"
                           />
                         </div>
@@ -177,87 +258,71 @@ const Rsvp: React.FC = () => {
                  ))}
                </div>
 
-               {/* Logistics Section */}
-               {guests.some(g => g.isAttending) && (
-                 <div className="space-y-10 pt-4">
+               {/* Transport Section - Only show if at least one guest is attending */}
+               {attendingCount > 0 && (
+                 <div className="space-y-6 pt-4">
                     <div className="flex items-center gap-3 mb-6 border-b-2 border-primary/10 pb-3">
-                        <span className="material-icons text-primary text-3xl">luggage</span>
-                        <h3 className="font-bold text-secondary uppercase text-base tracking-widest">Logistica</h3>
+                        <span className="material-icons text-primary text-3xl">directions</span>
+                        <h3 className="font-bold text-secondary uppercase text-base tracking-widest">Come Raggiungerete l'Evento?</h3>
                     </div>
 
-                    {/* Accommodation */}
-                    <div>
-                      <label className="block text-secondary font-serif text-xl font-bold mb-4">Pernotterete al villaggio "La Marée"?</label>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        {[
-                          { id: 'none', label: 'No, grazie' },
-                          { id: 'event_night', label: 'Solo notte evento' },
-                          { id: 'more_nights', label: 'Più notti' }
-                        ].map((opt) => (
-                          <label key={opt.id} className={`
-                            cursor-pointer p-4 rounded-xl border-2 text-center transition-all text-lg
-                            ${accommodation === opt.id ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-gray-50'}
-                          `}>
-                            <input 
-                              type="radio" 
-                              name="accommodation" 
-                              value={opt.id} 
-                              className="sr-only"
-                              onChange={(e) => setAccommodation(e.target.value)}
-                            />
-                            {opt.label}
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Transport */}
-                    <div>
-                      <label className="block text-secondary font-serif text-xl font-bold mb-4">Come arriverete?</label>
-                      <div className="grid grid-cols-2 gap-4">
-                        <label className={`
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {[
+                        { id: 'car', icon: 'directions_car', label: 'Auto' },
+                        { id: 'train', icon: 'train', label: 'Treno' },
+                        { id: 'plane', icon: 'flight', label: 'Aereo' },
+                        { id: 'other', icon: 'more_horiz', label: 'Altro' },
+                      ].map((opt) => (
+                        <label 
+                          key={opt.id}
+                          className={`
                             cursor-pointer p-5 rounded-xl border-2 flex flex-col items-center gap-3 transition-all
-                            ${transport === 'car' ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-gray-50'}
-                          `}>
-                            <span className="material-icons text-3xl">directions_car</span>
-                            <span className="text-lg">Auto</span>
-                            <input 
-                              type="radio" 
-                              name="transport" 
-                              value="car" 
-                              className="sr-only"
-                              onChange={(e) => setTransport(e.target.value)}
-                            />
+                            ${transport === opt.id ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-gray-50'}
+                          `}
+                        >
+                          <span className="material-icons text-3xl">{opt.icon}</span>
+                          <span className="text-lg">{opt.label}</span>
+                          <input 
+                            type="radio" 
+                            name="transport" 
+                            value={opt.id} 
+                            className="sr-only"
+                            checked={transport === opt.id}
+                            onChange={(e) => setTransport(e.target.value)}
+                          />
                         </label>
-                        <label className={`
-                            cursor-pointer p-5 rounded-xl border-2 flex flex-col items-center gap-3 transition-all
-                            ${transport === 'train' ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-gray-50'}
-                          `}>
-                            <span className="material-icons text-3xl">train</span>
-                            <span className="text-lg">Treno</span>
-                            <input 
-                              type="radio" 
-                              name="transport" 
-                              value="train" 
-                              className="sr-only"
-                              onChange={(e) => setTransport(e.target.value)}
-                            />
-                        </label>
-                      </div>
-
-                      {/* Train Message */}
-                      {transport === 'train' && (
-                        <div className="mt-6 p-5 bg-tertiary/20 rounded-xl text-secondary text-base font-medium flex gap-4 animate-fade-in-up items-start border border-tertiary/30">
-                           <span className="material-icons shrink-0 text-2xl">info</span>
-                           <p>Ottima scelta! Vi ricontatteremo più avanti per conoscere l'orario di arrivo esatto e organizzare la navetta dalla stazione.</p>
-                        </div>
-                      )}
+                      ))}
                     </div>
+
+                    {/* Train/Plane Message */}
+                    {(transport === 'train' || transport === 'plane') && (
+                      <div className="mt-6 p-5 bg-tertiary/20 rounded-xl text-secondary text-base font-medium flex gap-4 animate-fade-in-up items-start border border-tertiary/30">
+                         <span className="material-icons shrink-0 text-2xl">info</span>
+                         <p>
+                           {transport === 'train' 
+                             ? 'Ottima scelta! Vi ricontatteremo più avanti per conoscere l\'orario di arrivo esatto e organizzare la navetta dalla stazione.'
+                             : 'Vi ricontatteremo più avanti per conoscere i dettagli del vostro arrivo e organizzare il trasferimento.'
+                           }
+                         </p>
+                      </div>
+                    )}
+                 </div>
+               )}
+
+               {/* Summary */}
+               {guestForms.length > 1 && (
+                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 text-center">
+                   <p className="text-gray-700 font-serif text-lg">
+                     <span className="font-bold text-primary">{attendingCount}</span> su{' '}
+                     <span className="font-bold">{guestForms.length}</span>{' '}
+                     {attendingCount === 1 ? 'parteciperà' : 'parteciperanno'} all'evento
+                   </p>
                  </div>
                )}
 
                {error && (
-                 <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-center">
+                 <div className="p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-center flex items-center justify-center gap-2">
+                   <span className="material-icons">error</span>
                    {error}
                  </div>
                )}
@@ -265,22 +330,36 @@ const Rsvp: React.FC = () => {
                <div className="flex gap-4 pt-6">
                  <button 
                     type="button" 
-                    onClick={() => setStep('search')}
+                    onClick={resetForm}
                     className="flex-1 border-2 border-gray-300 text-gray-600 font-sans text-sm font-bold uppercase tracking-widest py-4 rounded-full hover:bg-gray-100 transition-all"
                  >
                     Indietro
                  </button>
                  <button 
                     type="submit" 
-                    disabled={isSubmitting}
-                    className="flex-[2] bg-primary text-white font-sans text-lg font-bold uppercase tracking-widest py-4 rounded-full hover:bg-[#b08d4b] shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isSubmitting || (attendingCount > 0 && !transport)}
+                    className="flex-[2] bg-primary text-white font-sans text-lg font-bold uppercase tracking-widest py-4 rounded-full hover:bg-[#b08d4b] shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                  >
-                    {isSubmitting ? 'Invio in corso...' : 'Conferma RSVP'}
+                    {isSubmitting ? (
+                      <>
+                        <span className="material-icons animate-spin">autorenew</span>
+                        Invio in corso...
+                      </>
+                    ) : (
+                      'Conferma RSVP'
+                    )}
                  </button>
                </div>
+
+               {attendingCount > 0 && !transport && (
+                 <p className="text-center text-amber-600 text-sm font-medium">
+                   Seleziona come raggiungerete l'evento per continuare
+                 </p>
+               )}
              </form>
           )}
 
+          {/* STEP 3: Success */}
           {step === 'success' && (
              <div className="text-center py-10 animate-fade-in-up">
                <div className="w-24 h-24 bg-green-50 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -288,10 +367,16 @@ const Rsvp: React.FC = () => {
                </div>
                <h3 className="font-display text-5xl text-secondary mb-4">Grazie!</h3>
                <p className="text-gray-700 font-serif text-xl leading-relaxed max-w-sm mx-auto font-medium">
-                 Abbiamo ricevuto la tua conferma. Non vediamo l'ora di festeggiare questo giorno speciale insieme a voi!
+                 {attendingCount > 0 
+                   ? 'Abbiamo ricevuto la tua conferma. Non vediamo l\'ora di festeggiare questo giorno speciale insieme a voi!'
+                   : 'Abbiamo ricevuto la tua risposta. Ci mancherete, ma capiamo!'
+                 }
                </p>
-               <button onClick={() => { setStep('search'); setSearchName(''); setGuests([]); setAccommodation(''); setTransport(''); }} className="text-primary text-sm font-bold mt-12 uppercase tracking-widest hover:underline p-4">
-                 Torna alla Home
+               <button 
+                 onClick={resetForm} 
+                 className="text-primary text-sm font-bold mt-12 uppercase tracking-widest hover:underline p-4"
+               >
+                 Conferma un altro invito
                </button>
              </div>
            )}

@@ -63,7 +63,7 @@ const Details: React.FC = () => {
                 title="Cerimonia"
                 location="Chiesa di Santa Maria di Portosalvo"
                 image="https://lh3.googleusercontent.com/aida-public/AB6AXuBrrhdZV5TH25jQJzrAzns-9N3nYBWDU5AbmKTp2ih9lCIpGDj-uUFxaNLkw4RnwO98wfy4w2KQzLi4ee6Ryj2JPQPmcZYlJhJUoABhM5VhE0Jvq-r4frdpKdt8Pjw2od8ReafLN-7kV4L34hRxE5qbUCogkoyZTAuSducLXoZEY7u_LYgy3GMMEdoboNgNWRHZatOs5_olXuBUXukL6IKCDan-Mmos75hW09R2XMB-YM8WbvjTtvK1LDDILTWUuD_jAcotZaJfgIas"
-                description="Ci ritroveremo a Marina di Pisciotta per celebrare il nostro 'Sì'. La chiesa si trova proprio sul porto."
+                description="Ci ritroveremo a Marina di Pisciotta per celebrare questo giorno. La chiesa si trova proprio sul porto."
             />
             <TimelineItem 
                 time="18:30"
@@ -71,14 +71,14 @@ const Details: React.FC = () => {
                 title="Aperitivo & Cena"
                 location="La Suerte Eventi"
                 image="https://lh3.googleusercontent.com/aida-public/AB6AXuBEO6XbnIinX83MNGOpk-uu26A9GMmpRyS0JhgoSavLgEsd6AHkaROY7FV6dbBQJKIUexEGJgaTHqJ3cxYIOnmQ7UeNjtG-__-7K58BF0p1QDeUhz4HVwRI_8Zlz_ktepZ4qm51J8ihy43m1lrg5JvbhZqBbmZLBV44GKReEb5FEWcbT0kV9U7KIAS83GTsVbg6MkEGIwvcBvkIWCdLh-0QBtrIhE0467BQi2Fv-AQVl-HN1mYgrLWENUJSu76X6WlL-ErtMUf0Mvml"
-                description="A soli 15 minuti dalla chiesa, ci sposteremo per un aperitivo al tramonto. Seguirà la cena servita ai tavoli nella sala panoramica."
+                description="A soli 15 minuti dalla chiesa, ci sposteremo per un aperitivo al tramonto. Seguirà la cena servita ai tavoli."
             />
             <TimelineItem 
                 time="22:30"
                 icon="nightlife"
                 title="Party"
                 location="La Suerte"
-                description="Balleremo insieme con la luna ad accompagnarci per tutta la notte! DJ Set e open bar fino al mattino."
+                description="Balleremo insieme con la luna ad accompagnarci per tutta la notte!"
             />
         </div>
     </div>
