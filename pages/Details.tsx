@@ -33,7 +33,26 @@ const TimelineItem = ({ time, title, location, description, icon, image }: any) 
             {!image && <h3 className="font-serif text-3xl md:text-4xl text-secondary font-bold mb-3">{title}</h3>}
             
             <p className="text-secondary font-bold text-base mb-5 flex items-center gap-2 font-sans uppercase tracking-wider">
-               <span className="material-icons text-primary">location_on</span> {location}
+                 <span className="material-icons text-primary">location_on</span> 
+                 {location === "Chiesa di Santa Maria di Portosalvo" ? (
+                   <a
+                     href="https://www.google.com/maps/place/Chiesa+di+Santa+Maria+di+Portosalvo/@39.0427369,12.025543,793203m/data=!3m1!1e3!4m10!1m2!2m1!1sChiesa+di+Santa+Maria+di+Portosalvo!3m6!1s0x133ebb6009e40a77:0xeec9663f291c9af9!8m2!3d40.1035198!4d15.2273317!15sCiNDaGllc2EgZGkgU2FudGEgTWFyaWEgZGkgUG9ydG9zYWx2b5IBD2NhdGhvbGljX2NodXJjaOABAA!16s%2Fg%2F122jx1rm?entry=ttu&g_ep=EgoyMDI2MDExOS4wIKXMDSoASAFQAw%3D%3D"
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="underline hover:text-primary transition-colors"
+                   >
+                     {location}
+                   </a>
+                 ) : (
+                   <a
+                     href={`https://www.google.com/maps/place/La+Suerte+Eventi/@40.1210133,15.1938833,3051m/data=!3m2!1e3!4b1!4m6!3m5!1s0x133eaf4cbba12e4f:0x940bf1027452b3e9!8m2!3d40.1210148!4d15.2123372!16s%2Fg%2F11h5n9qyhs?entry=ttu&g_ep=EgoyMDI2MDExOS4wIKXMDSoASAFQAw%3D%3D`}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="underline hover:text-primary transition-colors"
+                   >
+                     {location}
+                   </a>
+                 )}
             </p>
             
             {/* Increased text size and darkness for readability */}
@@ -69,7 +88,7 @@ const Details: React.FC = () => {
                 time="18:30"
                 icon="wine_bar"
                 title="Aperitivo & Cena"
-                location="La Suerte Eventi"
+                location="La Suerte"
                 image="https://lh3.googleusercontent.com/aida-public/AB6AXuBEO6XbnIinX83MNGOpk-uu26A9GMmpRyS0JhgoSavLgEsd6AHkaROY7FV6dbBQJKIUexEGJgaTHqJ3cxYIOnmQ7UeNjtG-__-7K58BF0p1QDeUhz4HVwRI_8Zlz_ktepZ4qm51J8ihy43m1lrg5JvbhZqBbmZLBV44GKReEb5FEWcbT0kV9U7KIAS83GTsVbg6MkEGIwvcBvkIWCdLh-0QBtrIhE0467BQi2Fv-AQVl-HN1mYgrLWENUJSu76X6WlL-ErtMUf0Mvml"
                 description="A soli 15 minuti dalla chiesa, ci sposteremo per un aperitivo al tramonto. Seguirà la cena servita ai tavoli."
             />

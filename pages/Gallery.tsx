@@ -5,37 +5,37 @@ const PHOTOS = [
   {
     id: 1,
     src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/elena_love.JPEG",
-    alt: "Walking together",
-    caption: "Il nostro primo viaggio"
+    alt: "Love ",
+    caption: "Korean Heart"
   },
   {
     id: 2,
     src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/IMG_1207.JPEG",
-    alt: "Sunset embrace",
-    caption: "Golden hour"
+    alt: "Indonesia Lover",
+    caption: "Il primo viaggio insieme"
   },
   {
     id: 3,
     src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/IMG_3825.JPEG",
-    alt: "Beach walk",
-    caption: "Dove tutto è iniziato"
+    alt: "Nix, nivis",
+    caption: "Nix, nivis"
   },
   {
     id: 4,
     src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/IMG_8323.JPEG",
-    alt: "Holding hands",
-    caption: "Insieme"
+    alt: "Villa della Regina",
+    caption: "Villa della Regina"
   },
   {
     id: 5,
     src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/IMG_1277.JPEG",
-    alt: "Celebration",
-    caption: "Gioia Pura"
+    alt: "Lecce",
+    caption: "Gioie del Salento"
   },
   {
     id: 6,
     src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/IMG_7724.JPEG",
-    alt: "Portrait",
+    alt: "Caserta",
     caption: "Noi"
   }
 ];
