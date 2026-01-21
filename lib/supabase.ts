@@ -23,6 +23,9 @@ export interface GuestResponse {
   is_attending: boolean;
   dietary_notes?: string;
   transport_method?: string;
+  has_plus_one?: boolean;
+  plus_one_name?: string;
+  plus_one_dietary_notes?: string;
   submitted_at?: string;
 }
 

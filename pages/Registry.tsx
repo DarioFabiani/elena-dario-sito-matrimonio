@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 
-// Password to access bank details - change this to your desired password
-const BANK_ACCESS_PASSWORD = 'elena-dario-2026';
-
 // Bank details - update with your actual information
 const BANK_DETAILS = {
   intestatario: 'Elena Rossi e Dario Bianchi',
@@ -16,12 +13,8 @@ const Registry: React.FC = () => {
   const [songInput, setSongInput] = useState('');
   const [recentSongs, setRecentSongs] = useState<{ id: number; song_name: string; created_at: string }[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Bank details state
-  const [passwordInput, setPasswordInput] = useState('');
-  const [isUnlocked, setIsUnlocked] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
+  const [showBankDetails, setShowBankDetails] = useState(false);
 
   // Load recent songs
   useEffect(() => {
@@ -67,23 +60,6 @@ const Registry: React.FC = () => {
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleAddSong();
-    }
-  };
-
-  // Handle password submission
-  const handlePasswordSubmit = () => {
-    if (passwordInput === BANK_ACCESS_PASSWORD) {
-      setIsUnlocked(true);
-      setPasswordError(false);
-    } else {
-      setPasswordError(true);
-      setPasswordInput('');
-    }
-  };
-
-  const handlePasswordKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handlePasswordSubmit();
     }
   };
 
@@ -164,127 +140,97 @@ const Registry: React.FC = () => {
                     </p>
                 </div>
 
-                {!isUnlocked ? (
-                  // Password Entry Section
-                  <div className="w-full bg-white rounded-3xl shadow-lg border border-gray-100 p-8 animate-fade-in-up">
-                    <div className="flex flex-col items-center text-center">
-                      <div className="bg-primary/10 p-5 rounded-full mb-6">
-                        <span className="material-icons text-4xl text-primary">lock</span>
-                      </div>
-                      <h3 className="font-serif text-xl text-secondary font-semibold mb-3">Dettagli Bancari</h3>
-                      <p className="text-gray-600 font-serif text-sm mb-6">
-                        Inserisci la password che ti abbiamo inviato per visualizzare i dettagli.
-                      </p>
-                      
-                      <div className="w-full relative mb-4">
-                        <input 
-                          type="password" 
-                          value={passwordInput}
-                          onChange={(e) => {
-                            setPasswordInput(e.target.value);
-                            setPasswordError(false);
-                          }}
-                          onKeyPress={handlePasswordKeyPress}
-                          placeholder="Password" 
-                          className={`w-full h-14 pl-5 pr-14 rounded-xl bg-gray-50 border ${passwordError ? 'border-red-400 shake' : 'border-gray-200'} outline-none focus:ring-2 focus:ring-primary/50 text-gray-800 placeholder:text-gray-400 font-sans`}
-                        />
-                        <button 
-                          onClick={handlePasswordSubmit}
-                          className="absolute right-2 top-2 bottom-2 w-10 bg-primary hover:bg-secondary text-white rounded-lg flex items-center justify-center transition-colors"
-                        >
-                          <span className="material-icons">arrow_forward</span>
-                        </button>
-                      </div>
-                      
-                      {passwordError && (
-                        <p className="text-red-500 text-sm font-medium animate-fade-in-up">
-                          <span className="material-icons text-sm align-middle mr-1">error</span>
-                          Password non corretta
-                        </p>
-                      )}
+                {/* Bank Details Section */}
+                <div className="w-full bg-white rounded-3xl shadow-lg border border-primary/20 p-8 animate-fade-in-up">
+                  <div className="flex flex-col items-center text-center mb-6">
+                    <div className="bg-primary/10 p-4 rounded-full mb-4">
+                      <span className="material-icons text-3xl text-primary">account_balance</span>
                     </div>
+                    <h3 className="font-serif text-xl text-secondary font-semibold">Dettagli Bancari</h3>
                   </div>
-                ) : (
-                  // Bank Details Section (unlocked)
-                  <div className="w-full bg-white rounded-3xl shadow-lg border border-primary/20 p-8 animate-fade-in-up">
-                    <div className="flex flex-col items-center text-center mb-6">
-                      <div className="bg-green-100 p-4 rounded-full mb-4">
-                        <span className="material-icons text-3xl text-green-600">check_circle</span>
+                  
+                  {!showBankDetails ? (
+                    <button
+                      onClick={() => setShowBankDetails(true)}
+                      className="w-full py-4 px-6 bg-primary hover:bg-primary/90 text-white rounded-xl font-serif text-lg font-semibold transition-colors shadow-md flex items-center justify-center gap-2"
+                    >
+                      <span className="material-icons">visibility</span>
+                      Mostra Dettagli Bancari
+                    </button>
+                  ) : (
+                  <>
+                  <div className="space-y-4">
+                    {/* Intestatario */}
+                    <button 
+                      onClick={() => copyToClipboard(BANK_DETAILS.intestatario, 'intestatario')}
+                      className="w-full text-left p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-primary/50 hover:bg-primary/5 transition-all group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-gray-500 font-sans uppercase tracking-wide mb-1">Intestatario</p>
+                          <p className="text-gray-800 font-serif font-semibold">{BANK_DETAILS.intestatario}</p>
+                        </div>
+                        <span className="material-icons text-gray-400 group-hover:text-primary transition-colors">
+                          {copiedField === 'intestatario' ? 'check' : 'content_copy'}
+                        </span>
                       </div>
-                      <h3 className="font-serif text-xl text-secondary font-semibold">Dettagli Bancari</h3>
-                    </div>
+                    </button>
                     
-                    <div className="space-y-4">
-                      {/* Intestatario */}
-                      <button 
-                        onClick={() => copyToClipboard(BANK_DETAILS.intestatario, 'intestatario')}
-                        className="w-full text-left p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-primary/50 hover:bg-primary/5 transition-all group"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-xs text-gray-500 font-sans uppercase tracking-wide mb-1">Intestatario</p>
-                            <p className="text-gray-800 font-serif font-semibold">{BANK_DETAILS.intestatario}</p>
-                          </div>
-                          <span className="material-icons text-gray-400 group-hover:text-primary transition-colors">
-                            {copiedField === 'intestatario' ? 'check' : 'content_copy'}
-                          </span>
+                    {/* IBAN */}
+                    <button 
+                      onClick={() => copyToClipboard(BANK_DETAILS.iban.replace(/\s/g, ''), 'iban')}
+                      className="w-full text-left p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-primary/50 hover:bg-primary/5 transition-all group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-gray-500 font-sans uppercase tracking-wide mb-1">IBAN</p>
+                          <p className="text-gray-800 font-mono font-semibold text-sm md:text-base break-all">{BANK_DETAILS.iban}</p>
                         </div>
-                      </button>
-                      
-                      {/* IBAN */}
-                      <button 
-                        onClick={() => copyToClipboard(BANK_DETAILS.iban.replace(/\s/g, ''), 'iban')}
-                        className="w-full text-left p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-primary/50 hover:bg-primary/5 transition-all group"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-xs text-gray-500 font-sans uppercase tracking-wide mb-1">IBAN</p>
-                            <p className="text-gray-800 font-mono font-semibold text-sm md:text-base break-all">{BANK_DETAILS.iban}</p>
-                          </div>
-                          <span className="material-icons text-gray-400 group-hover:text-primary transition-colors flex-shrink-0 ml-2">
-                            {copiedField === 'iban' ? 'check' : 'content_copy'}
-                          </span>
-                        </div>
-                      </button>
-                      
-                      {/* Banca */}
-                      <button 
-                        onClick={() => copyToClipboard(BANK_DETAILS.banca, 'banca')}
-                        className="w-full text-left p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-primary/50 hover:bg-primary/5 transition-all group"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-xs text-gray-500 font-sans uppercase tracking-wide mb-1">Banca</p>
-                            <p className="text-gray-800 font-serif font-semibold">{BANK_DETAILS.banca}</p>
-                          </div>
-                          <span className="material-icons text-gray-400 group-hover:text-primary transition-colors">
-                            {copiedField === 'banca' ? 'check' : 'content_copy'}
-                          </span>
-                        </div>
-                      </button>
-                      
-                      {/* Causale */}
-                      <button 
-                        onClick={() => copyToClipboard(BANK_DETAILS.causale, 'causale')}
-                        className="w-full text-left p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-primary/50 hover:bg-primary/5 transition-all group"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-xs text-gray-500 font-sans uppercase tracking-wide mb-1">Causale Suggerita</p>
-                            <p className="text-gray-800 font-serif font-semibold">{BANK_DETAILS.causale}</p>
-                          </div>
-                          <span className="material-icons text-gray-400 group-hover:text-primary transition-colors">
-                            {copiedField === 'causale' ? 'check' : 'content_copy'}
-                          </span>
-                        </div>
-                      </button>
-                    </div>
+                        <span className="material-icons text-gray-400 group-hover:text-primary transition-colors flex-shrink-0 ml-2">
+                          {copiedField === 'iban' ? 'check' : 'content_copy'}
+                        </span>
+                      </div>
+                    </button>
                     
-                    <p className="text-center text-gray-500 text-sm font-serif mt-6 italic">
-                      Clicca su un campo per copiarlo
-                    </p>
+                    {/* Banca */}
+                    <button 
+                      onClick={() => copyToClipboard(BANK_DETAILS.banca, 'banca')}
+                      className="w-full text-left p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-primary/50 hover:bg-primary/5 transition-all group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-gray-500 font-sans uppercase tracking-wide mb-1">Banca</p>
+                          <p className="text-gray-800 font-serif font-semibold">{BANK_DETAILS.banca}</p>
+                        </div>
+                        <span className="material-icons text-gray-400 group-hover:text-primary transition-colors">
+                          {copiedField === 'banca' ? 'check' : 'content_copy'}
+                        </span>
+                      </div>
+                    </button>
+                    
+                    {/* Causale */}
+                    <button 
+                      onClick={() => copyToClipboard(BANK_DETAILS.causale, 'causale')}
+                      className="w-full text-left p-4 bg-gray-50 rounded-xl border border-gray-200 hover:border-primary/50 hover:bg-primary/5 transition-all group"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xs text-gray-500 font-sans uppercase tracking-wide mb-1">Causale Suggerita</p>
+                          <p className="text-gray-800 font-serif font-semibold">{BANK_DETAILS.causale}</p>
+                        </div>
+                        <span className="material-icons text-gray-400 group-hover:text-primary transition-colors">
+                          {copiedField === 'causale' ? 'check' : 'content_copy'}
+                        </span>
+                      </div>
+                    </button>
                   </div>
-                )}
+                  
+                  <p className="text-center text-gray-500 text-sm font-serif mt-6 italic">
+                    Clicca su un campo per copiarlo
+                  </p>
+                  </>
+                  )}
+                </div>
             </div>
 
         </div>

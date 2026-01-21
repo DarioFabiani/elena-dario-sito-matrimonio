@@ -5,6 +5,9 @@ interface GuestFormState {
   guest: Guest;
   isAttending: boolean;
   dietaryNotes: string;
+  hasPlusOne: boolean;
+  plusOneName: string;
+  plusOneDietaryNotes: string;
 }
 
 const Rsvp: React.FC = () => {
@@ -61,6 +64,9 @@ const Rsvp: React.FC = () => {
         guest,
         isAttending: true,
         dietaryNotes: '',
+        hasPlusOne: false,
+        plusOneName: '',
+        plusOneDietaryNotes: '',
       }));
 
       setGroupName(foundGroupName);
@@ -93,6 +99,9 @@ const Rsvp: React.FC = () => {
         is_attending: form.isAttending,
         dietary_notes: form.dietaryNotes || null,
         transport_method: form.isAttending ? transport : null,
+        has_plus_one: !!(form.isAttending && form.hasPlusOne && form.plusOneName.trim()),
+        plus_one_name: form.isAttending && form.hasPlusOne && form.plusOneName.trim() ? form.plusOneName.trim() : null,
+        plus_one_dietary_notes: form.isAttending && form.hasPlusOne && form.plusOneDietaryNotes.trim() ? form.plusOneDietaryNotes.trim() : null,
       }));
 
       // Upsert responses (insert or update if already exists)
@@ -124,6 +133,8 @@ const Rsvp: React.FC = () => {
   };
 
   const attendingCount = guestForms.filter(f => f.isAttending).length;
+  const plusOneCount = guestForms.filter(f => f.isAttending && f.hasPlusOne && f.plusOneName.trim()).length;
+  const totalAttending = attendingCount + plusOneCount;
 
   return (
     <div className="bg-background min-h-screen flex items-center justify-center py-20 relative overflow-hidden text-gray-800">
@@ -254,6 +265,57 @@ const Rsvp: React.FC = () => {
                           />
                         </div>
                       )}
+
+                      {/* Plus One Option - Only visible if attending */}
+                      {form.isAttending && (
+                        <div className="mt-4 animate-fade-in-up">
+                          <div className="bg-tertiary/10 p-4 rounded-xl border border-tertiary/30">
+                            <label className="flex items-center gap-3 cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={form.hasPlusOne}
+                                onChange={(e) => updateGuestForm(index, 'hasPlusOne', e.target.checked)}
+                                className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                              />
+                              <span className="text-sm font-bold text-secondary uppercase tracking-wider flex items-center gap-2">
+                                <span className="material-icons text-lg text-primary">person_add</span> 
+                                Porterò un accompagnatore
+                              </span>
+                            </label>
+
+                            {/* Plus One Details */}
+                            {form.hasPlusOne && (
+                              <div className="mt-4 space-y-4 animate-fade-in-up pl-8">
+                                <div>
+                                  <label className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1">
+                                    Nome dell'accompagnatore *
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={form.plusOneName}
+                                    onChange={(e) => updateGuestForm(index, 'plusOneName', e.target.value)}
+                                    placeholder="Nome e cognome"
+                                    className="w-full bg-white border-b-2 border-gray-200 py-2 px-3 text-base text-gray-900 focus:border-primary focus:outline-none transition-all rounded-lg"
+                                    required={form.hasPlusOne}
+                                  />
+                                </div>
+                                <div>
+                                  <label className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1">
+                                    Esigenze alimentari accompagnatore
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={form.plusOneDietaryNotes}
+                                    onChange={(e) => updateGuestForm(index, 'plusOneDietaryNotes', e.target.value)}
+                                    placeholder="Allergie, intolleranze..."
+                                    className="w-full bg-white border-b-2 border-gray-200 py-2 px-3 text-base text-gray-900 focus:border-primary focus:outline-none transition-all rounded-lg"
+                                  />
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
                    </div>
                  ))}
                </div>
@@ -310,12 +372,16 @@ const Rsvp: React.FC = () => {
                )}
 
                {/* Summary */}
-               {guestForms.length > 1 && (
+               {(guestForms.length > 1 || plusOneCount > 0) && (
                  <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 text-center">
                    <p className="text-gray-700 font-serif text-lg">
-                     <span className="font-bold text-primary">{attendingCount}</span> su{' '}
-                     <span className="font-bold">{guestForms.length}</span>{' '}
-                     {attendingCount === 1 ? 'parteciperà' : 'parteciperanno'} all'evento
+                     <span className="font-bold text-primary">{totalAttending}</span>{' '}
+                     {totalAttending === 1 ? 'persona parteciperà' : 'persone parteciperanno'} all'evento
+                     {plusOneCount > 0 && (
+                       <span className="text-gray-500 text-base block mt-1">
+                         ({attendingCount} {attendingCount === 1 ? 'invitato' : 'invitati'} + {plusOneCount} {plusOneCount === 1 ? 'accompagnatore' : 'accompagnatori'})
+                       </span>
+                     )}
                    </p>
                  </div>
                )}
@@ -337,7 +403,7 @@ const Rsvp: React.FC = () => {
                  </button>
                  <button 
                     type="submit" 
-                    disabled={isSubmitting || (attendingCount > 0 && !transport)}
+                    disabled={isSubmitting || (attendingCount > 0 && !transport) || guestForms.some(f => f.isAttending && f.hasPlusOne && !f.plusOneName.trim())}
                     className="flex-[2] bg-primary text-white font-sans text-lg font-bold uppercase tracking-widest py-4 rounded-full hover:bg-[#b08d4b] shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                  >
                     {isSubmitting ? (
@@ -356,6 +422,12 @@ const Rsvp: React.FC = () => {
                    Seleziona come raggiungerete l'evento per continuare
                  </p>
                )}
+
+               {guestForms.some(f => f.isAttending && f.hasPlusOne && !f.plusOneName.trim()) && (
+                 <p className="text-center text-amber-600 text-sm font-medium">
+                   Inserisci il nome dell'accompagnatore per continuare
+                 </p>
+               )}
              </form>
           )}
 
@@ -367,8 +439,8 @@ const Rsvp: React.FC = () => {
                </div>
                <h3 className="font-display text-5xl text-secondary mb-4">Grazie!</h3>
                <p className="text-gray-700 font-serif text-xl leading-relaxed max-w-sm mx-auto font-medium">
-                 {attendingCount > 0 
-                   ? 'Abbiamo ricevuto la tua conferma. Non vediamo l\'ora di festeggiare questo giorno speciale insieme a voi!'
+                 {totalAttending > 0 
+                   ? `Abbiamo ricevuto la conferma per ${totalAttending} ${totalAttending === 1 ? 'persona' : 'persone'}. Non vediamo l'ora di festeggiare questo giorno speciale insieme a voi!`
                    : 'Abbiamo ricevuto la tua risposta. Ci mancherete, ma capiamo!'
                  }
                </p>
@@ -386,6 +458,12 @@ const Rsvp: React.FC = () => {
         <footer className="mt-20 text-center pb-8 opacity-80">
            <p className="font-display text-5xl text-primary mb-4">Elena & Dario</p>
            <p className="text-sm text-gray-500 mt-6 tracking-widest uppercase font-bold">Made with Love</p>
+           <div className="mt-6 space-y-2">
+             <p className="text-sm text-gray-600 font-serif">
+               <span className="material-icons text-xs align-middle mr-1">phone</span>
+               <span className="font-semibold">Dario:</span> <a href="tel:+393400719042" className="hover:text-primary transition-colors">340 0719042</a>
+             </p>
+           </div>
         </footer>
 
       </main>

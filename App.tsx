@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PasswordGate from './components/PasswordGate';
 import Home from './pages/Home';
 import Story from './pages/Story';
 import Rsvp from './pages/Rsvp';
@@ -70,36 +71,38 @@ const Navigation = () => {
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-background text-gray-800 font-serif selection:bg-primary/20">
-      <Navigation />
-      
-      <section id="home" className="min-h-screen">
-        <Home />
-      </section>
-      
-      <section id="story" className="min-h-screen">
-        <Story />
-      </section>
+    <PasswordGate>
+      <div className="min-h-screen bg-background text-gray-800 font-serif selection:bg-primary/20">
+        <Navigation />
+        
+        <section id="home" className="min-h-screen">
+          <Home />
+        </section>
+        
+        <section id="story" className="min-h-screen">
+          <Story />
+        </section>
 
-      <section id="gallery" className="min-h-screen">
-        <Gallery />
-      </section>
-      
-      <section id="details" className="min-h-screen">
-        <Details />
-      </section>
+        <section id="gallery" className="min-h-screen">
+          <Gallery />
+        </section>
+        
+        <section id="details" className="min-h-screen">
+          <Details />
+        </section>
 
-      <section id="logistics" className="min-h-screen">
-        <Logistics />
-      </section>
-      
-      <section id="rsvp" className="min-h-screen">
-        <Rsvp />
-      </section>
-      
-      <section id="registry" className="min-h-screen">
-        <Registry />
-      </section>
-    </div>
+        <section id="logistics" className="min-h-screen">
+          <Logistics />
+        </section>
+        
+        <section id="rsvp" className="min-h-screen">
+          <Rsvp />
+        </section>
+        
+        <section id="registry" className="min-h-screen">
+          <Registry />
+        </section>
+      </div>
+    </PasswordGate>
   );
 }
