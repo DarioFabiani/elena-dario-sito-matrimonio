@@ -23,7 +23,14 @@ const Rsvp: React.FC = () => {
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!searchName.trim()) return;
+    const cleanedName = searchName.trim();
+    if (!cleanedName) return;
+
+    const nameParts = cleanedName.split(/\s+/);
+    if (nameParts.length < 2) {
+      setSearchError("Inserisci nome e cognome per cercare l'invito.");
+      return;
+    }
 
     setIsSearching(true);
     setSearchError('');
@@ -33,7 +40,7 @@ const Rsvp: React.FC = () => {
       const { data: matchingGuests, error: searchErr } = await supabase
         .from('guests')
         .select('*')
-        .ilike('name', `%${searchName.trim()}%`);
+        .ilike('name', `%${cleanedName}%`);
 
       if (searchErr) throw searchErr;
 
@@ -154,7 +161,7 @@ const Rsvp: React.FC = () => {
           <div className="text-center mb-8 animate-fade-in-up">
             <h2 className="font-display text-5xl md:text-6xl text-secondary mb-3">RSVP</h2>
             <p className="font-serif text-gray-700 font-medium text-lg">
-              Per favore conferma la tua presenza entro il 28 Febbraio 2026.
+              Per favore conferma la tua presenza <span className="inline-flex items-center justify-center rounded-full bg-primary/10 px-4 py-1 text-primary font-semibold">entro il 28 Febbraio 2026.</span>
             </p>
           </div>
         )}
@@ -167,7 +174,7 @@ const Rsvp: React.FC = () => {
                <div className="text-center mb-10">
                   <span className="material-icons text-5xl text-primary mb-4">person_search</span>
                   <h3 className="font-serif text-3xl text-secondary font-bold">Cerca il tuo invito</h3>
-                  <p className="text-gray-600 text-lg font-medium mt-3">Inserisci il tuo nome o cognome per trovare il tuo invito.</p>
+                  <p className="text-gray-600 text-lg font-medium mt-3">Inserisci il tuo nome e cognome per trovare il tuo invito.</p>
                </div>
                
                <form onSubmit={handleSearch} className="flex flex-col gap-6">

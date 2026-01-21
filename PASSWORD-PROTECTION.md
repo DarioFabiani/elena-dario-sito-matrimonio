@@ -13,7 +13,7 @@ Il sito è ora protetto da password. Questo significa che i visitatori dovranno 
 
 ### 1. Password di Default
 
-La password di default è: **`elena-dario-2026`**
+La password di default è: la-tua-password-segreta
 
 ### 2. Cambiare la Password
 
@@ -43,11 +43,6 @@ Invia la password agli invitati via:
 - **WhatsApp** ai gruppi
 - **Email** con le partecipazioni
 - **Messaggi privati** sui social
-
-**Suggerimento**: Usa una password facile da ricordare come:
-- `elena-e-dario-2026`
-- `15maggio2026`
-- `il-nostro-matrimonio`
 
 ## 🧪 Testare Localmente
 
