@@ -3,8 +3,13 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables. Please check .env.local');
+if (!supabaseUrl?.startsWith('http')) {
+  console.error('Invalid or missing VITE_SUPABASE_URL. Found:', supabaseUrl);
+  throw new Error('Missing or invalid Supabase URL. Please set VITE_SUPABASE_URL in your environment variables.');
+}
+
+if (!supabaseAnonKey) {
+  throw new Error('Missing Supabase Anon Key. Please set VITE_SUPABASE_ANON_KEY in your environment variables.');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
