@@ -38,7 +38,7 @@ CREATE TABLE public.guest_responses (
   guest_id BIGINT NOT NULL REFERENCES public.guests(id) ON DELETE CASCADE,
   is_attending BOOLEAN NOT NULL DEFAULT false,
   dietary_notes TEXT,                    -- Dietary requirements/allergies
-  transport_method TEXT,                 -- 'car', 'train', 'plane', 'other'
+  transport_method TEXT,                 -- 'car', 'train', 'other'
   submitted_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(guest_id)                       -- One response per guest
 );

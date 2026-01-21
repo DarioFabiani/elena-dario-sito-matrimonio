@@ -336,11 +336,10 @@ const Rsvp: React.FC = () => {
                         <h3 className="font-bold text-secondary uppercase text-base tracking-widest">Come Raggiungerete l'Evento?</h3>
                     </div>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                       {[
                         { id: 'car', icon: 'directions_car', label: 'Auto' },
                         { id: 'train', icon: 'train', label: 'Treno' },
-                        { id: 'plane', icon: 'flight', label: 'Aereo' },
                         { id: 'other', icon: 'more_horiz', label: 'Altro' },
                       ].map((opt) => (
                         <label 
@@ -364,15 +363,12 @@ const Rsvp: React.FC = () => {
                       ))}
                     </div>
 
-                    {/* Train/Plane Message */}
-                    {(transport === 'train' || transport === 'plane') && (
+                    {/* Train Message */}
+                    {transport === 'train' && (
                       <div className="mt-6 p-5 bg-tertiary/20 rounded-xl text-secondary text-base font-medium flex gap-4 animate-fade-in-up items-start border border-tertiary/30">
                          <span className="material-icons shrink-0 text-2xl">info</span>
                          <p>
-                           {transport === 'train' 
-                             ? 'Ottima scelta! Vi ricontatteremo più avanti per conoscere l\'orario di arrivo esatto e organizzare la navetta dalla stazione.'
-                             : 'Vi ricontatteremo più avanti per conoscere i dettagli del vostro arrivo e organizzare il trasferimento.'
-                           }
+                           Ottima scelta! Vi ricontatteremo più avanti per conoscere l'orario di arrivo esatto e organizzare la navetta dalla stazione.
                          </p>
                       </div>
                     )}
