@@ -44,14 +44,14 @@ const Logistics: React.FC = () => {
                     <span className="material-icons text-lg">commute</span> Navetta Gratuita
                   </h4>
                   <p>Prevediamo un servizio navetta per le tratte:</p>
-                  <ul className="list-disc list-inside pl-2 text-base space-y-2 mt-2 opacity-90">
+                  <ul className="list-disc list-inside pl-2 text-lg space-y-2 mt-2 opacity-90">
                     <li>Stazione → Hotel</li>
                     <li>Hotel → Chiesa → Ricevimento</li>
                     <li>Ricevimento → Hotel</li>
                   </ul>
                 </div>
 
-                <div className="bg-orange-50 p-5 rounded-xl border border-orange-200">
+                <div className="bg-orange-50 p-5 rounded-xl border border-orange-200 text-lg">
                    <h4 className="font-bold text-orange-800 uppercase text-sm tracking-wide mb-2 flex items-center gap-2">
                     <span className="material-icons text-lg">warning</span> Attenzione Auto
                   </h4>
@@ -97,9 +97,9 @@ const Logistics: React.FC = () => {
           {/* Tips */}
           <div className="md:col-span-2">
             <InfoCard icon="wb_sunny" title="Cosa Portare">
-              <div className="flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left">
+              <div className="flex flex-col md:flex-row gap-8 items-center md:items-start text-center md:text-left text-xl md:text-2xl">
                 <div className="flex-1">
-                   <p className="mb-4 font-medium text-lg">Il ricevimento si svolgerà in gran parte all'aperto.</p>
+                   <p className="mb-4 font-medium text-lg">Il ricevimento si svolgerà (incrociamo le dita) in gran parte all'aperto.</p>
                    <ul className="space-y-4">
                      <li className="flex items-center gap-4 justify-center md:justify-start">
                         <span className="material-icons text-tertiary text-3xl">checkroom</span>
