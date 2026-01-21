@@ -462,26 +462,26 @@ const Rsvp: React.FC = () => {
         <footer className="mt-20 text-center pb-8 opacity-80">
            <p className="font-display text-5xl text-primary mb-4">Elena & Dario</p>
            <p className="text-sm text-gray-500 mt-6 tracking-widest uppercase font-bold">Made with Love</p>
-           <div className="mt-6 space-y-3 text-base md:text-lg text-gray-600 font-serif">
-             <p className="flex flex-col gap-2 md:flex-row md:items-center md:justify-center md:gap-8">
-               <span className="flex items-center gap-2">
-                 <span className="material-icons text-base align-middle">phone</span>
+           <div className="mt-8 space-y-6 text-xl md:text-2xl text-gray-600 font-serif">
+             <p className="flex flex-col gap-4 md:flex-row md:items-center md:justify-center md:gap-12">
+               <span className="flex items-center gap-3">
+                 <span className="material-icons text-2xl align-middle text-primary">phone</span>
                  <span className="font-semibold">Dario:</span>
                  <a href="tel:+393400719042" className="hover:text-primary transition-colors">340 0719042</a>
                </span>
-               <span className="flex items-center gap-2">
-                 <span className="material-icons text-base align-middle">email</span>
+               <span className="flex items-center gap-3">
+                 <span className="material-icons text-2xl align-middle text-primary">email</span>
                  <a href="mailto:dario.fabiani96@gmail.com" className="hover:text-primary transition-colors">dario.fabiani96@gmail.com</a>
                </span>
              </p>
-             <p className="flex flex-col gap-2 md:flex-row md:items-center md:justify-center md:gap-8">
-               <span className="flex items-center gap-2">
-                 <span className="material-icons text-base align-middle">phone</span>
+             <p className="flex flex-col gap-4 md:flex-row md:items-center md:justify-center md:gap-12">
+               <span className="flex items-center gap-3">
+                 <span className="material-icons text-2xl align-middle text-primary">phone</span>
                  <span className="font-semibold">Elena:</span>
                  <a href="tel:+393488090124" className="hover:text-primary transition-colors">348 8090124</a>
                </span>
-               <span className="flex items-center gap-2">
-                 <span className="material-icons text-base align-middle">email</span>
+               <span className="flex items-center gap-3">
+                 <span className="material-icons text-2xl align-middle text-primary">email</span>
                  <a href="mailto:ecostagliola@gmail.com" className="hover:text-primary transition-colors">ecostagliola@gmail.com</a>
                </span>
              </p>
