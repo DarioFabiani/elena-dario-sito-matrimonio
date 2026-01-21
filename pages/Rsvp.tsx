@@ -142,6 +142,7 @@ const Rsvp: React.FC = () => {
   const attendingCount = guestForms.filter(f => f.isAttending).length;
   const plusOneCount = guestForms.filter(f => f.isAttending && f.hasPlusOne && f.plusOneName.trim()).length;
   const totalAttending = attendingCount + plusOneCount;
+  const allowPlusOne = guestForms.length === 1;
 
   return (
     <div className="bg-background min-h-screen flex items-center justify-center py-20 relative overflow-hidden text-gray-800">
@@ -274,7 +275,7 @@ const Rsvp: React.FC = () => {
                       )}
 
                       {/* Plus One Option - Only visible if attending */}
-                      {form.isAttending && (
+                      {form.isAttending && allowPlusOne && (
                         <div className="mt-4 animate-fade-in-up">
                           <div className="bg-tertiary/10 p-4 rounded-xl border border-tertiary/30">
                             <label className="flex items-center gap-3 cursor-pointer">
