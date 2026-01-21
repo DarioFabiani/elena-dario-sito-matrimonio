@@ -107,7 +107,7 @@ const Logistics: React.FC = () => {
                      </li>
                     <li className="flex items-center gap-4 justify-center md:justify-start">
                       <span className="material-icons text-tertiary text-3xl">nightlife</span>
-                      <span className="text-lg">Pro tip: scarpe comode. Il DJ non avrà pietà</span>
+                      <span className="text-lg">Il DJ non avrà pietà - scarpe comode consigliate</span>
                     </li>
                    </ul>
                 </div>
