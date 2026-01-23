@@ -9,12 +9,24 @@ const Home: React.FC = () => {
     <div className="relative min-h-screen w-full flex flex-col items-center justify-center pt-24 lg:pt-0 overflow-hidden bg-[#FDFBF7]">
       
       {/* Main Image Container with Text Overlay */}
-      <div className="relative z-10 w-full flex flex-col lg:block items-center justify-center">
-        <img 
-          src="https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/E+D_base.jpg"
-          alt="Elena & Dario - Save the Date"
-          className="w-full h-auto max-h-[70vh] object-cover"
-        />
+      <div className="relative z-10 w-full max-w-screen-2xl mx-auto flex flex-col lg:block items-center justify-center px-6 lg:px-12">
+        {/* Decorative Frame Container */}
+        <div className="relative">
+          {/* Decorative Outer Border - Offset */}
+          <div className="absolute -inset-4 border border-primary/30 rounded-[2.5rem] lg:rounded-[3.5rem] pointer-events-none transform rotate-1"></div>
+          <div className="absolute -inset-4 border border-primary/30 rounded-[2.5rem] lg:rounded-[3.5rem] pointer-events-none transform -rotate-1"></div>
+          
+          {/* Main Image Box */}
+          <div className="relative rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white">
+            <img 
+              src="https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/E+D_base.jpg"
+              alt="Elena & Dario - Save the Date"
+              className="w-full h-auto max-h-[70vh] object-cover object-cover"
+            />
+            {/* Subtle inner vignette */}
+            <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-[2rem] lg:rounded-[3rem] pointer-events-none"></div>
+          </div>
+        </div>
         
         {/* Wedding Text Overlay */}
         <div className="relative mt-8 lg:mt-0 lg:absolute lg:inset-0 flex items-center justify-center">
