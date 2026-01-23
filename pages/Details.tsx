@@ -36,7 +36,7 @@ const TimelineItem = ({ time, title, location, description, icon, image }: any) 
                  <span className="material-icons text-primary">location_on</span> 
                  {location === "Chiesa di Santa Maria di Portosalvo" ? (
                    <a
-                     href="https://www.google.com/maps/place/Chiesa+di+Santa+Maria+di+Portosalvo/@39.0427369,12.025543,793203m/data=!3m1!1e3!4m10!1m2!2m1!1sChiesa+di+Santa+Maria+di+Portosalvo!3m6!1s0x133ebb6009e40a77:0xeec9663f291c9af9!8m2!3d40.1035198!4d15.2273317!15sCiNDaGllc2EgZGkgU2FudGEgTWFyaWEgZGkgUG9ydG9zYWx2b5IBD2NhdGhvbGljX2NodXJjaOABAA!16s%2Fg%2F122jx1rm?entry=ttu&g_ep=EgoyMDI2MDExOS4wIKXMDSoASAFQAw%3D%3D"
+                     href="https://www.google.it/maps/place/Chiesa+di+Santa+Maria+di+Portosalvo/@40.1035239,15.2247514,17z/data=!3m1!4b1!4m6!3m5!1s0x133ebb6009e40a77:0xeec9663f291c9af9!8m2!3d40.1035198!4d15.2273317!16s%2Fg%2F122jx1rm?entry=ttu&g_ep=EgoyMDI2MDEyMC4wIKXMDSoASAFQAw%3D%3D"
                      target="_blank"
                      rel="noopener noreferrer"
                      className="underline hover:text-primary transition-colors"
