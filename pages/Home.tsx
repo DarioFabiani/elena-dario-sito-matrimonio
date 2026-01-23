@@ -6,10 +6,10 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center pt-24 md:pt-0 overflow-hidden bg-[#FDFBF7]">
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center pt-24 lg:pt-0 overflow-hidden bg-[#FDFBF7]">
       
       {/* Main Image Container with Text Overlay */}
-      <div className="relative z-10 w-full flex items-center justify-center">
+      <div className="relative z-10 w-full flex flex-col lg:block items-center justify-center">
         <img 
           src="https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/E+D_base.jpg"
           alt="Elena & Dario - Save the Date"
@@ -17,8 +17,8 @@ const Home: React.FC = () => {
         />
         
         {/* Wedding Text Overlay */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center animate-fade-in-up" style={{ marginTop: '-4%' }}>
+        <div className="relative mt-8 lg:mt-0 lg:absolute lg:inset-0 flex items-center justify-center">
+          <div className="text-center animate-fade-in-up lg:-mt-[4%]">
             <h1 className="text-4xl md:text-6xl text-secondary font-display mb-3 md:mb-4">
               Elena & Dario
             </h1>
