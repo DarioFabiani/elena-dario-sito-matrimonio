@@ -82,7 +82,7 @@ const Details: React.FC = () => {
                 title="Cerimonia"
                 location="Chiesa di Santa Maria di Portosalvo"
                 image="https://lh3.googleusercontent.com/aida-public/AB6AXuBrrhdZV5TH25jQJzrAzns-9N3nYBWDU5AbmKTp2ih9lCIpGDj-uUFxaNLkw4RnwO98wfy4w2KQzLi4ee6Ryj2JPQPmcZYlJhJUoABhM5VhE0Jvq-r4frdpKdt8Pjw2od8ReafLN-7kV4L34hRxE5qbUCogkoyZTAuSducLXoZEY7u_LYgy3GMMEdoboNgNWRHZatOs5_olXuBUXukL6IKCDan-Mmos75hW09R2XMB-YM8WbvjTtvK1LDDILTWUuD_jAcotZaJfgIas"
-                description="Ci ritroveremo a Marina di Pisciotta per celebrare questo giorno. La chiesa si trova proprio sul porto."
+                description="Ci ritroveremo a Marina di Pisciotta per celebrare questo giorno."
             />
             <TimelineItem 
                 time="18:30"

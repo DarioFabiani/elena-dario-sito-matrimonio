@@ -1,14 +1,14 @@
 import React from 'react';
 
 const InfoCard = ({ icon, title, children }: { icon: string, title: string, children?: React.ReactNode }) => (
-  <div className="bg-white p-8 md:p-10 rounded-3xl shadow-lg border border-primary/10 hover:shadow-xl transition-shadow duration-300">
-    <div className="flex items-center gap-5 mb-8">
-      <div className="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
-        <span className="material-icons text-primary text-3xl">{icon}</span>
+  <div className="bg-white p-6 sm:p-8 md:p-10 rounded-3xl shadow-lg border border-primary/10 hover:shadow-xl transition-shadow duration-300">
+    <div className="flex flex-wrap md:flex-nowrap items-start gap-4 sm:gap-5 mb-8">
+      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
+        <span className="material-icons text-primary text-2xl sm:text-3xl">{icon}</span>
       </div>
-      <h3 className="font-display text-5xl text-secondary">{title}</h3>
+      <h3 className="font-display text-4xl sm:text-5xl leading-tight text-secondary break-words flex-1">{title}</h3>
     </div>
-    <div className="text-gray-800 font-serif leading-relaxed space-y-5 text-xl font-medium">
+    <div className="text-gray-800 font-serif leading-relaxed space-y-5 text-lg sm:text-xl font-medium">
       {children}
     </div>
   </div>
@@ -68,7 +68,7 @@ const Logistics: React.FC = () => {
           {/* Accommodation */}
           <InfoCard icon="hotel" title="Pernottamento">
             <div className="space-y-4">
-              <p>Abbiamo preso accordi con il <strong>Villaggio Club "La Marée"</strong>.</p>
+              <p><strong>Villaggio Club "La Marée"</strong>.</p>
               
               <div className="bg-primary/10 p-5 rounded-xl border border-primary/30">
                 <h4 className="font-bold text-primary text-lg mb-1">🎁 Notte del 30 Maggio</h4>
