@@ -39,7 +39,7 @@ const Navigation = () => {
   const navItems = [
     { id: 'home', label: 'Home' },
     { id: 'story', label: 'La Storia' },
-    { id: 'gallery', label: 'Foto' },
+    { id: 'gallery', label: 'Memorie' },
     { id: 'details', label: 'Programma' },
     { id: 'logistics', label: 'Info' },
     { id: 'rsvp', label: 'R.S.V.P.' },

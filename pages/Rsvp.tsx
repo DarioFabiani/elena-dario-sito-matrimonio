@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { supabase, Guest, GuestResponse } from '../lib/supabase';
 
+interface PlusOne {
+  name: string;
+  dietaryNotes: string;
+}
+
 interface GuestFormState {
   guest: Guest;
   isAttending: boolean;
   dietaryNotes: string;
-  hasPlusOne: boolean;
-  plusOneName: string;
-  plusOneDietaryNotes: string;
+  plusOnes: PlusOne[];
 }
 
 const Rsvp: React.FC = () => {
@@ -71,9 +74,7 @@ const Rsvp: React.FC = () => {
         guest,
         isAttending: true,
         dietaryNotes: '',
-        hasPlusOne: false,
-        plusOneName: '',
-        plusOneDietaryNotes: '',
+        plusOnes: [],
       }));
 
       setGroupName(foundGroupName);
@@ -101,15 +102,28 @@ const Rsvp: React.FC = () => {
 
     try {
       // Prepare responses for all guests
-      const responses: GuestResponse[] = guestForms.map((form) => ({
-        guest_id: form.guest.id,
-        is_attending: form.isAttending,
-        dietary_notes: form.dietaryNotes || null,
-        transport_method: form.isAttending ? transport : null,
-        has_plus_one: !!(form.isAttending && form.hasPlusOne && form.plusOneName.trim()),
-        plus_one_name: form.isAttending && form.hasPlusOne && form.plusOneName.trim() ? form.plusOneName.trim() : null,
-        plus_one_dietary_notes: form.isAttending && form.hasPlusOne && form.plusOneDietaryNotes.trim() ? form.plusOneDietaryNotes.trim() : null,
-      }));
+      const responses: GuestResponse[] = guestForms.map((form) => {
+        // Filter out incomplete plus ones
+        const validPlusOnes = form.isAttending 
+          ? form.plusOnes.filter(p => p.name.trim() !== '') 
+          : [];
+
+        return {
+          guest_id: form.guest.id,
+          is_attending: form.isAttending,
+          dietary_notes: form.dietaryNotes || null,
+          transport_method: form.isAttending ? transport : null,
+          // Backward compatibility
+          has_plus_one: validPlusOnes.length > 0,
+          plus_one_name: validPlusOnes.length > 0 ? validPlusOnes[0].name : null,
+          plus_one_dietary_notes: validPlusOnes.length > 0 ? validPlusOnes[0].dietaryNotes : null,
+          // New JSON field
+          plus_ones_json: validPlusOnes.map(p => ({
+            name: p.name.trim(),
+            dietary_notes: p.dietaryNotes.trim()
+          })),
+        };
+      });
 
       // Upsert responses (insert or update if already exists)
       for (const response of responses) {
@@ -140,9 +154,34 @@ const Rsvp: React.FC = () => {
   };
 
   const attendingCount = guestForms.filter(f => f.isAttending).length;
-  const plusOneCount = guestForms.filter(f => f.isAttending && f.hasPlusOne && f.plusOneName.trim()).length;
+  // Count all valid plus ones across all forms
+  const plusOneCount = guestForms.reduce((acc, form) => {
+    if (!form.isAttending) return acc;
+    return acc + form.plusOnes.filter(p => p.name.trim() !== '').length;
+  }, 0);
   const totalAttending = attendingCount + plusOneCount;
-  const allowPlusOne = guestForms.length === 1;
+
+  // Helper to manage plus ones
+  const handlePlusOneChange = (formIndex: number, delta: number) => {
+    const newForms = [...guestForms];
+    const form = newForms[formIndex];
+    
+    if (delta > 0) {
+      // Add a plue one
+      form.plusOnes.push({ name: '', dietaryNotes: '' });
+    } else if (delta < 0 && form.plusOnes.length > 0) {
+      // Remove the last one
+      form.plusOnes.pop();
+    }
+    
+    setGuestForms(newForms);
+  };
+
+  const updatePlusOne = (formIndex: number, plusOneIndex: number, field: keyof PlusOne, value: string) => {
+    const newForms = [...guestForms];
+    newForms[formIndex].plusOnes[plusOneIndex][field] = value;
+    setGuestForms(newForms);
+  };
 
   return (
     <div className="bg-background min-h-screen flex items-center justify-center py-20 relative overflow-hidden text-gray-800">
@@ -275,50 +314,68 @@ const Rsvp: React.FC = () => {
                       )}
 
                       {/* Plus One Option - Only visible if attending */}
-                      {form.isAttending && allowPlusOne && (
+                      {form.isAttending && (
                         <div className="mt-4 animate-fade-in-up">
                           <div className="bg-tertiary/10 p-4 rounded-xl border border-tertiary/30">
-                            <label className="flex items-center gap-3 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={form.hasPlusOne}
-                                onChange={(e) => updateGuestForm(index, 'hasPlusOne', e.target.checked)}
-                                className="w-5 h-5 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
-                              />
+                            <div className="flex items-center justify-between mb-4">
                               <span className="text-sm font-bold text-secondary uppercase tracking-wider flex items-center gap-2">
                                 <span className="material-icons text-lg text-primary">person_add</span> 
-                                Porterò un accompagnatore
+                                Ospiti Aggiuntivi
                               </span>
-                            </label>
+                              
+                              <div className="flex items-center gap-3 bg-white rounded-lg px-2 py-1 border border-tertiary/20">
+                                <button
+                                  type="button"
+                                  onClick={() => handlePlusOneChange(index, -1)}
+                                  disabled={form.plusOnes.length === 0}
+                                  className="w-8 h-8 flex items-center justify-center rounded-full bg-tertiary/20 text-secondary disabled:opacity-30 disabled:cursor-not-allowed hover:bg-tertiary/40 transition-colors"
+                                >
+                                  <span className="material-icons text-sm">remove</span>
+                                </button>
+                                <span className="font-display text-2xl w-6 text-center text-secondary">{form.plusOnes.length}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => handlePlusOneChange(index, 1)}
+                                  className="w-8 h-8 flex items-center justify-center rounded-full bg-tertiary/20 text-secondary hover:bg-tertiary/40 transition-colors"
+                                >
+                                  <span className="material-icons text-sm">add</span>
+                                </button>
+                              </div>
+                            </div>
 
                             {/* Plus One Details */}
-                            {form.hasPlusOne && (
-                              <div className="mt-4 space-y-4 animate-fade-in-up pl-8">
-                                <div>
-                                  <label className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1">
-                                    Nome dell'accompagnatore *
-                                  </label>
-                                  <input
-                                    type="text"
-                                    value={form.plusOneName}
-                                    onChange={(e) => updateGuestForm(index, 'plusOneName', e.target.value)}
-                                    placeholder="Nome e cognome"
-                                    className="w-full bg-white border-b-2 border-gray-200 py-2 px-3 text-base text-gray-900 focus:border-primary focus:outline-none transition-all rounded-lg"
-                                    required={form.hasPlusOne}
-                                  />
-                                </div>
-                                <div>
-                                  <label className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1">
-                                    Esigenze alimentari accompagnatore
-                                  </label>
-                                  <input
-                                    type="text"
-                                    value={form.plusOneDietaryNotes}
-                                    onChange={(e) => updateGuestForm(index, 'plusOneDietaryNotes', e.target.value)}
-                                    placeholder="Allergie, intolleranze..."
-                                    className="w-full bg-white border-b-2 border-gray-200 py-2 px-3 text-base text-gray-900 focus:border-primary focus:outline-none transition-all rounded-lg"
-                                  />
-                                </div>
+                            {form.plusOnes.length > 0 && (
+                              <div className="space-y-6 animate-fade-in-up pl-4 border-l-2 border-primary/20">
+                                {form.plusOnes.map((plusOne, poIndex) => (
+                                  <div key={poIndex} className="space-y-3">
+                                    <p className="text-xs font-bold text-primary uppercase tracking-widest">Ospite #{poIndex + 1}</p>
+                                    <div>
+                                      <label className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1">
+                                        Nome e Cognome *
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={plusOne.name}
+                                        onChange={(e) => updatePlusOne(index, poIndex, 'name', e.target.value)}
+                                        placeholder="Nome e cognome"
+                                        className="w-full bg-white border-b-2 border-gray-200 py-2 px-3 text-base text-gray-900 focus:border-primary focus:outline-none transition-all rounded-lg"
+                                        required
+                                      />
+                                    </div>
+                                    <div>
+                                      <label className="text-xs font-bold text-gray-600 uppercase tracking-wider block mb-1">
+                                        Esigenze alimentari
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={plusOne.dietaryNotes}
+                                        onChange={(e) => updatePlusOne(index, poIndex, 'dietaryNotes', e.target.value)}
+                                        placeholder="Allergie, intolleranze..."
+                                        className="w-full bg-white border-b-2 border-gray-200 py-2 px-3 text-base text-gray-900 focus:border-primary focus:outline-none transition-all rounded-lg"
+                                      />
+                                    </div>
+                                  </div>
+                                ))}
                               </div>
                             )}
                           </div>
@@ -407,7 +464,7 @@ const Rsvp: React.FC = () => {
                  </button>
                  <button 
                     type="submit" 
-                    disabled={isSubmitting || (attendingCount > 0 && !transport) || guestForms.some(f => f.isAttending && f.hasPlusOne && !f.plusOneName.trim())}
+                    disabled={isSubmitting || (attendingCount > 0 && !transport) || guestForms.some(f => f.isAttending && f.plusOnes.some(p => !p.name.trim()))}
                     className="flex-[2] bg-primary text-white font-sans text-lg font-bold uppercase tracking-widest py-4 rounded-full hover:bg-[#b08d4b] shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                  >
                     {isSubmitting ? (

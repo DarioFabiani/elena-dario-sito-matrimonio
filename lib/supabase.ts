@@ -31,6 +31,7 @@ export interface GuestResponse {
   has_plus_one?: boolean;
   plus_one_name?: string;
   plus_one_dietary_notes?: string;
+  plus_ones_json?: { name: string; dietary_notes: string }[];
   submitted_at?: string;
 }
 

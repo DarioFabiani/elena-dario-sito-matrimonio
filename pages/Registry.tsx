@@ -3,9 +3,9 @@ import { supabase } from '../lib/supabase';
 
 // Bank details - update with your actual information
 const BANK_DETAILS = {
-  intestatario: 'Elena Rossi e Dario Bianchi',
-  iban: 'IT00 X000 0000 0000 0000 0000 000',
-  banca: 'Nome Banca',
+  intestatario: 'Elena Costagliola',
+  iban: 'IT12 D036 6901 6002 3614 6972 130',
+  banca: 'Revolut Bank UAB',
   causale: 'Regalo di nozze Elena e Dario'
 };
 
@@ -136,7 +136,7 @@ const Registry: React.FC = () => {
                 <div className="text-center mb-10">
                     <h2 className="font-display text-4xl md:text-5xl text-primary mb-4">Lista Nozze</h2>
                     <p className="text-gray-800 font-serif text-lg font-medium">
-                        La vostra presenza è il nostro regalo più grande. Tuttavia, se desiderate farci un dono, un contributo per il nostro futuro sarebbe molto apprezzato.
+                        La vostra presenza è per noi il dono più prezioso. Se desiderate farci un regalo, potete scegliere liberamente un pensiero a vostra scelta oppure, se preferite, contribuire al nostro viaggio di nozze e alla futura casa insieme.
                     </p>
                 </div>
 
