@@ -70,6 +70,8 @@ const Navigation = () => {
 };
 
 export default function App() {
+  const [musicTrack, setMusicTrack] = useState<string | null>(null);
+
   return (
     <PasswordGate>
       <div className="min-h-screen bg-background text-gray-800 font-serif selection:bg-primary/20">
@@ -84,7 +86,7 @@ export default function App() {
         </section>
 
         <section id="gallery" className="min-h-screen">
-          <Gallery />
+          <Gallery onPlayMusic={setMusicTrack} />
         </section>
         
         <section id="details" className="min-h-screen">
@@ -102,6 +104,30 @@ export default function App() {
         <section id="registry" className="min-h-screen">
           <Registry />
         </section>
+
+        {/* Persistent Music Player */}
+        {musicTrack && (
+          <div className="fixed bottom-4 right-4 z-50 animate-fade-in-up md:right-8 filter drop-shadow-xl">
+            <div className="relative group">
+              <button 
+                onClick={() => setMusicTrack(null)}
+                className="absolute -top-3 -right-3 bg-secondary text-white rounded-full p-1 shadow-md hover:bg-secondary/80 transition-colors z-10 w-6 h-6 flex items-center justify-center"
+                title="Stop Music"
+              >
+                <span className="material-icons text-xs">close</span>
+              </button>
+              <iframe 
+                data-testid="embed-iframe"
+                src={`https://open.spotify.com/embed/track/${musicTrack}?autoplay=1`} 
+                width="300" 
+                height="80" 
+                allow="autoplay *; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                title="Background Music"
+                className="rounded-xl bg-white border-0"
+              ></iframe>
+            </div>
+          </div>
+        )}
       </div>
     </PasswordGate>
   );

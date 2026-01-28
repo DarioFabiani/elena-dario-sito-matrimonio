@@ -36,7 +36,8 @@ const PHOTOS = [
     id: 6,
     src: "https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/IMG_7724.JPEG",
     alt: "Caserta",
-    caption: "Noi"
+    caption: "Noi",
+    spotifyTrackId: "2J6t6y8oK7MXthd1rDjjwj" // Easter Egg: Specific Track
   },
   {
     id: 7,
@@ -64,8 +65,8 @@ const PHOTOS = [
   }
 ];
 
-const Gallery: React.FC = () => {
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+const Gallery: React.FC<{ onPlayMusic?: (id: string) => void }> = ({ onPlayMusic }) => {
+  const [selectedPhoto, setSelectedPhoto] = useState<typeof PHOTOS[0] | null>(null);
 
   // Split photos into two rows
   const row1 = PHOTOS.slice(0, 5);
@@ -74,7 +75,7 @@ const Gallery: React.FC = () => {
   // Close lightbox on ESC key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelectedImage(null);
+      if (e.key === 'Escape') setSelectedPhoto(null);
     };
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
@@ -83,7 +84,12 @@ const Gallery: React.FC = () => {
   const PhotoCard = ({ photo }: { photo: typeof PHOTOS[0] }) => (
     <div 
       className="flex-none w-[280px] md:w-[350px] aspect-[4/3] group relative overflow-hidden rounded-2xl cursor-pointer shadow-md hover:shadow-xl transition-all duration-500 mx-3"
-      onClick={() => setSelectedImage(photo.src)}
+      onClick={() => {
+        setSelectedPhoto(photo);
+        if (photo.spotifyTrackId && onPlayMusic) {
+          onPlayMusic(photo.spotifyTrackId);
+        }
+      }}
     >
       <img 
         src={photo.src} 
@@ -136,24 +142,28 @@ const Gallery: React.FC = () => {
       </div>
 
       {/* Lightbox Modal */}
-      {selectedImage && (
+      {selectedPhoto && (
         <div 
           className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in-up"
-          onClick={() => setSelectedImage(null)}
+          onClick={() => setSelectedPhoto(null)}
         >
           <button 
-            onClick={() => setSelectedImage(null)}
+            onClick={() => setSelectedPhoto(null)}
             className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors"
           >
             <span className="material-icons text-4xl">close</span>
           </button>
 
-          <img 
-            src={selectedImage} 
-            alt="Gallery Fullscreen"
-            className="max-w-full max-h-[90vh] object-contain rounded-md shadow-2xl"
-            onClick={(e) => e.stopPropagation()} // Prevent closing when clicking the image itself
-          />
+          <div className="relative flex flex-col items-center max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
+            <img 
+              src={selectedPhoto.src} 
+              alt={selectedPhoto.alt}
+              className="max-w-full max-h-[75vh] object-contain rounded-md shadow-2xl mb-4"
+            />
+            {selectedPhoto.caption && (
+               <p className="text-white/80 font-serif italic text-xl mt-4 text-center">{selectedPhoto.caption}</p>
+            )}
+          </div>
         </div>
       )}
     </div>
