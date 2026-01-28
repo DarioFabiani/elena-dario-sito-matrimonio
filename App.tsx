@@ -105,6 +105,12 @@ export default function App() {
           <Registry />
         </section>
 
+        <footer className="py-12 bg-paper text-center">
+          <p className="text-secondary/60 font-serif italic text-lg">
+            Fatto con <span className="text-red-400">❤</span> da Dario & Elena
+          </p>
+        </footer>
+
         {/* Persistent Music Player */}
         {musicTrack && (
           <div className="fixed bottom-4 right-4 z-50 animate-fade-in-up md:right-8 filter drop-shadow-xl">
