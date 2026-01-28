@@ -115,7 +115,6 @@ const Gallery: React.FC<{ onPlayMusic?: (id: string) => void }> = ({ onPlayMusic
            <span className="text-primary font-bold tracking-[0.3em] uppercase text-xs mb-2 block">Ricordi</span>
            <h2 className="text-5xl md:text-6xl text-secondary font-display mb-6">Momenti</h2>
            <p className="text-gray-500 font-serif max-w-2xl mx-auto italic">
-             "Scattiamo foto per avere un biglietto di ritorno verso un momento che altrimenti sarebbe andato perso."
            </p>
         </div>
       </div>
