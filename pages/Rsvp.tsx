@@ -39,11 +39,15 @@ const Rsvp: React.FC = () => {
     setSearchError('');
 
     try {
-      // Search for guests whose name contains the search term (case insensitive)
-      const { data: matchingGuests, error: searchErr } = await supabase
-        .from('guests')
-        .select('*')
-        .ilike('name', `%${cleanedName}%`);
+      // Search for guests whose name contains all parts of the search term (case insensitive)
+      let query = supabase.from('guests').select('*');
+
+      // Match each part of the name independently (AND condition)
+      nameParts.forEach((part) => {
+        query = query.ilike('name', `%${part}%`);
+      });
+
+      const { data: matchingGuests, error: searchErr } = await query;
 
       if (searchErr) throw searchErr;
 
