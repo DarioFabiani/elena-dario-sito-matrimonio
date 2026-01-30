@@ -19,6 +19,8 @@ const Rsvp: React.FC = () => {
   const [groupName, setGroupName] = useState('');
   const [guestForms, setGuestForms] = useState<GuestFormState[]>([]);
   const [transport, setTransport] = useState<string>('');
+  const [accommodation, setAccommodation] = useState<string>(''); // 'yes', 'no', 'unknown'
+  const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string>('');
@@ -117,6 +119,8 @@ const Rsvp: React.FC = () => {
           is_attending: form.isAttending,
           dietary_notes: form.dietaryNotes || null,
           transport_method: form.isAttending ? transport : null,
+          accommodation_needs: form.isAttending ? accommodation : null,
+          accommodation_days: (form.isAttending && accommodation === 'yes') ? selectedDays : [],
           // Backward compatibility
           has_plus_one: validPlusOnes.length > 0,
           plus_one_name: validPlusOnes.length > 0 ? validPlusOnes[0].name : null,
@@ -153,6 +157,8 @@ const Rsvp: React.FC = () => {
     setGroupName('');
     setGuestForms([]);
     setTransport('');
+    setAccommodation('');
+    setSelectedDays([]);
     setError('');
     setSearchError('');
   };
@@ -436,6 +442,94 @@ const Rsvp: React.FC = () => {
                  </div>
                )}
 
+               {/* Accommodation Section - Only show if at least one guest is attending */}
+               {attendingCount > 0 && (
+                 <div className="space-y-6 pt-4">
+                    <div className="flex items-center gap-3 mb-6 border-b-2 border-primary/10 pb-3">
+                        <span className="material-icons text-primary text-3xl">hotel</span>
+                        <h3 className="font-bold text-secondary uppercase text-base tracking-widest">Pernottamento</h3>
+                    </div>
+
+                    <p className="text-gray-600 mb-4 font-serif text-lg">
+                      Avete bisogno di pernottare una o più notti?
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {[
+                        { id: 'yes', label: 'Sì, abbiamo bisogno di pernottare' },
+                        { id: 'no', label: 'No, non abbiamo bisogno' },
+                        { id: 'unknown', label: 'Non lo sappiamo ancora' },
+                      ].map((opt) => (
+                        <label 
+                          key={opt.id}
+                          className={`
+                            cursor-pointer p-4 rounded-xl border-2 flex items-center justify-center text-center transition-all h-full
+                            ${accommodation === opt.id ? 'border-primary bg-primary/10 text-primary font-bold' : 'border-gray-200 hover:border-gray-300 text-gray-700 bg-gray-50'}
+                          `}
+                        >
+                          <span className="text-lg">{opt.label}</span>
+                          <input 
+                            type="radio" 
+                            name="accommodation" 
+                            value={opt.id} 
+                            className="sr-only"
+                            checked={accommodation === opt.id}
+                            onChange={(e) => setAccommodation(e.target.value)}
+                          />
+                        </label>
+                      ))}
+                    </div>
+
+                    {/* Checkboxes for Days if YES */}
+                    {accommodation === 'yes' && (
+                      <div className="mt-6 animate-fade-in-up">
+                        <p className="text-gray-700 font-bold mb-3 uppercase text-sm tracking-wider">Seleziona le notti:</p>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                          {[
+                            { id: 'Friday', label: 'Venerdì (29/05)' },
+                            { id: 'Saturday', label: 'Sabato (30/05)' },
+                            { id: 'Sunday', label: 'Domenica (31/05)' },
+                            { id: 'Monday', label: 'Lunedì (01/06)' },
+                          ].map((day) => (
+                            <label 
+                              key={day.id}
+                              className={`
+                                cursor-pointer p-3 rounded-lg border-2 flex flex-col items-center gap-2 transition-all
+                                ${selectedDays.includes(day.id) ? 'border-primary bg-primary/5 text-primary font-bold' : 'border-gray-200 hover:border-primary/30 text-gray-600'}
+                              `}
+                            >
+                              <span>{day.label}</span>
+                              <input 
+                                type="checkbox"
+                                value={day.id}
+                                checked={selectedDays.includes(day.id)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setSelectedDays([...selectedDays, day.id]);
+                                  } else {
+                                    setSelectedDays(selectedDays.filter(d => d !== day.id));
+                                  }
+                                }}
+                                className="w-5 h-5 text-primary focus:ring-primary rounded border-gray-300"
+                              />
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Unknown Message */}
+                    {accommodation === 'unknown' && (
+                      <div className="mt-6 p-5 bg-tertiary/20 rounded-xl text-secondary text-base font-medium flex gap-4 animate-fade-in-up items-start border border-tertiary/30">
+                         <span className="material-icons shrink-0 text-2xl">notifications_active</span>
+                         <p>
+                           Nessun problema! Vi chiederemo nuovamente informazioni sul pernottamento più avanti.
+                         </p>
+                      </div>
+                    )}
+                 </div>
+               )}
+
                {/* Summary */}
                {(guestForms.length > 1 || plusOneCount > 0) && (
                  <div className="bg-gray-50 p-4 rounded-xl border border-gray-200 text-center">
@@ -468,7 +562,12 @@ const Rsvp: React.FC = () => {
                  </button>
                  <button 
                     type="submit" 
-                    disabled={isSubmitting || (attendingCount > 0 && !transport) || guestForms.some(f => f.isAttending && f.plusOnes.some(p => !p.name.trim()))}
+                    disabled={
+                      isSubmitting || 
+                      (attendingCount > 0 && (!transport || !accommodation)) || 
+                      (accommodation === 'yes' && selectedDays.length === 0) || 
+                      guestForms.some(f => f.isAttending && f.plusOnes.some(p => !p.name.trim()))
+                    }
                     className="flex-[2] bg-primary text-white font-sans text-lg font-bold uppercase tracking-widest py-4 rounded-full hover:bg-[#b08d4b] shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                  >
                     {isSubmitting ? (
@@ -485,6 +584,18 @@ const Rsvp: React.FC = () => {
                {attendingCount > 0 && !transport && (
                  <p className="text-center text-amber-600 text-sm font-medium">
                    Seleziona come raggiungerete l'evento per continuare
+                 </p>
+               )}
+
+               {attendingCount > 0 && !accommodation && (
+                 <p className="text-center text-amber-600 text-sm font-medium">
+                   Seleziona l'opzione per il pernottamento
+                 </p>
+               )}
+
+               {accommodation === 'yes' && selectedDays.length === 0 && (
+                 <p className="text-center text-amber-600 text-sm font-medium">
+                   Seleziona almeno una notte per il pernottamento
                  </p>
                )}
 
