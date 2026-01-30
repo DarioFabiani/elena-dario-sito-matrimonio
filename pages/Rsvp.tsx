@@ -451,14 +451,14 @@ const Rsvp: React.FC = () => {
                     </div>
 
                     <p className="text-gray-600 mb-4 font-serif text-lg">
-                      Avete bisogno di pernottare una o più notti?
+                      Rimarrete a dormire presso la struttura La Mareé?
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       {[
-                        { id: 'yes', label: 'Sì, abbiamo bisogno di pernottare' },
-                        { id: 'no', label: 'No, non abbiamo bisogno' },
-                        { id: 'unknown', label: 'Non lo sappiamo ancora' },
+                        { id: 'yes', label: 'Sì' },
+                        { id: 'no', label: 'No' },
+                        { id: 'unknown', label: 'Non lo so' },
                       ].map((opt) => (
                         <label 
                           key={opt.id}
