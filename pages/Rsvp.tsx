@@ -327,13 +327,13 @@ const Rsvp: React.FC = () => {
                       {form.isAttending && (
                         <div className="mt-4 animate-fade-in-up">
                           <div className="bg-tertiary/10 p-4 rounded-xl border border-tertiary/30">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                               <span className="text-sm font-bold text-secondary uppercase tracking-wider flex items-center gap-2">
                                 <span className="material-icons text-lg text-primary">person_add</span> 
                                 Ospiti Aggiuntivi
                               </span>
                               
-                              <div className="flex items-center gap-3 bg-white rounded-lg px-2 py-1 border border-tertiary/20">
+                              <div className="flex items-center gap-3 bg-white rounded-lg px-2 py-1 border border-tertiary/20 self-start sm:self-auto">
                                 <button
                                   type="button"
                                   onClick={() => handlePlusOneChange(index, -1)}
