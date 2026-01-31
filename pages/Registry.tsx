@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import React, { useState, useEffect, useRef } from 'react';
+
+// Supabase Edge Function URL
+const SUPABASE_URL = 'https://hujhpdqrsrldaulwisoq.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1amhwZHFyc3JsZGF1bHdpc29xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1MDkwOTgsImV4cCI6MjA4NDA4NTA5OH0.PqdRh7v8WgAqQ_LNz_M132aXxl4Gk1fCDoIOohqbioA';
 
 // Bank details - update with your actual information
 const BANK_DETAILS = {
@@ -9,57 +12,119 @@ const BANK_DETAILS = {
   causale: 'Regalo di nozze Elena e Dario'
 };
 
+interface SpotifyTrack {
+  id: string;
+  name: string;
+  artist: string;
+  album: string;
+  image: string;
+  uri: string;
+}
+
 const Registry: React.FC = () => {
-  const [songInput, setSongInput] = useState('');
-  const [recentSongs, setRecentSongs] = useState<{ id: number; song_name: string; created_at: string }[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<SpotifyTrack[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isAdding, setIsAdding] = useState<string | null>(null);
+  const [addedTracks, setAddedTracks] = useState<Set<string>>(new Set());
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [showBankDetails, setShowBankDetails] = useState(false);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Load recent songs
+  // Debounced search
   useEffect(() => {
-    loadRecentSongs();
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
+
+    searchTimeoutRef.current = setTimeout(() => {
+      searchTracks(query);
+    }, 400);
+
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, [query]);
+
+  // Hide toast after 3 seconds
+  useEffect(() => {
+    if (toast) {
+      const timer = setTimeout(() => setToast(null), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
+
+  // Click outside to close results
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setResults([]);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const loadRecentSongs = async () => {
+  const searchTracks = async (searchQuery: string) => {
+    setIsSearching(true);
     try {
-      const { data, error } = await supabase
-        .from('song_requests')
-        .select('id, song_name, created_at')
-        .order('created_at', { ascending: false })
-        .limit(5);
-
-      if (error) throw error;
-      setRecentSongs(data || []);
-    } catch (err) {
-      console.error('Error loading songs:', err);
-    }
-  };
-
-  const handleAddSong = async () => {
-    if (!songInput.trim() || isSubmitting) return;
-
-    setIsSubmitting(true);
-    try {
-      const { error } = await supabase
-        .from('song_requests')
-        .insert({ song_name: songInput.trim() });
-
-      if (error) throw error;
-
-      setSongInput('');
-      await loadRecentSongs(); // Reload the list
-    } catch (err) {
-      console.error('Error adding song:', err);
-      alert('Errore nell\'aggiungere la canzone. Riprova.');
+      const response = await fetch(
+        `${SUPABASE_URL}/functions/v1/search-music?query=${encodeURIComponent(searchQuery)}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          },
+        }
+      );
+      
+      if (!response.ok) throw new Error('Search failed');
+      
+      const data = await response.json();
+      setResults(data.tracks || []);
+    } catch (error) {
+      console.error('Error searching tracks:', error);
+      setResults([]);
     } finally {
-      setIsSubmitting(false);
+      setIsSearching(false);
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleAddSong();
+  const addTrackToPlaylist = async (track: SpotifyTrack) => {
+    if (addedTracks.has(track.id)) {
+      setToast({ message: 'Canzone già aggiunta!', type: 'error' });
+      return;
+    }
+
+    setIsAdding(track.id);
+    try {
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/add-track`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ trackUri: track.uri }),
+      });
+
+      if (!response.ok) throw new Error('Failed to add track');
+
+      setAddedTracks(prev => new Set([...prev, track.id]));
+      setToast({ message: `"${track.name}" aggiunta alla playlist! 🎉`, type: 'success' });
+    } catch (error) {
+      console.error('Error adding track:', error);
+      setToast({ message: 'Errore nell\'aggiunta. Riprova.', type: 'error' });
+    } finally {
+      setIsAdding(null);
     }
   };
 
@@ -79,55 +144,99 @@ const Registry: React.FC = () => {
       <div className="absolute top-0 left-0 w-full h-full opacity-5 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #C5A059 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
       <div className="absolute top-0 w-full h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
       
+      {/* Toast Notification */}
+      {toast && (
+        <div className={`fixed top-24 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl shadow-lg animate-fade-in-up ${
+          toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+        }`}>
+          <p className="font-sans font-medium">{toast.message}</p>
+        </div>
+      )}
+      
       <main className="relative z-10 flex flex-col items-center px-6 max-w-4xl mx-auto w-full">
         
-        <div className="grid md:grid-cols-2 gap-16 w-full items-center">
+        <div className="grid md:grid-cols-2 gap-16 w-full items-start">
             
-            {/* Music Section */}
+            {/* Music Section - Spotify Integration */}
             <div className="flex flex-col items-center text-center md:items-start md:text-left">
-                <div className="bg-secondary/10 p-5 rounded-full mb-6 text-secondary inline-block">
-                    <span className="material-icons text-5xl">music_note</span>
+                <div className="bg-[#1DB954]/10 p-5 rounded-full mb-6 inline-block">
+                    <svg className="w-12 h-12 text-[#1DB954]" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+                    </svg>
                 </div>
                 <h2 className="font-display text-5xl md:text-6xl text-secondary mb-5">Balla con Noi</h2>
                 <p className="text-gray-800 font-serif mb-8 text-lg md:text-xl leading-relaxed font-medium">
-                    Vogliamo suonare le canzoni che vi emozionano. Aiutateci a creare la playlist perfetta per la serata.
+                    Cerca la tua canzone preferita e aggiungila direttamente alla nostra playlist Spotify!
                 </p>
 
-                <div className="w-full relative mb-8">
+                {/* Search Container */}
+                <div className="w-full relative" ref={containerRef}>
+                    {/* Search Input */}
+                    <div className="w-full relative mb-4">
                     <input 
                         type="text" 
-                        value={songInput}
-                        onChange={(e) => setSongInput(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Artista - Titolo Canzone" 
-                        className="w-full h-16 pl-6 pr-16 rounded-2xl bg-white shadow-lg shadow-secondary/5 border border-gray-100 outline-none focus:ring-2 focus:ring-secondary/50 text-gray-800 placeholder:text-gray-400 font-sans text-lg"
-                        disabled={isSubmitting}
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Cerca una canzone..." 
+                        className="w-full h-16 pl-6 pr-16 rounded-2xl bg-white shadow-lg shadow-secondary/5 border border-gray-100 outline-none focus:ring-2 focus:ring-[#1DB954]/50 text-gray-800 placeholder:text-gray-400 font-sans text-lg"
                     />
-                    <button 
-                        onClick={handleAddSong}
-                        disabled={isSubmitting || !songInput.trim()}
-                        className="absolute right-3 top-3 bottom-3 w-12 bg-secondary hover:bg-primary text-white rounded-xl flex items-center justify-center transition-colors shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        <span className="material-icons text-2xl">{isSubmitting ? 'hourglass_empty' : 'add'}</span>
-                    </button>
+                    <div className="absolute right-5 top-1/2 -translate-y-1/2">
+                        {isSearching ? (
+                            <span className="material-icons text-gray-400 animate-spin">autorenew</span>
+                        ) : (
+                            <span className="material-icons text-gray-400">search</span>
+                        )}
+                    </div>
                 </div>
                 
-                <div className="space-y-3 w-full opacity-90">
-                     {recentSongs.length > 0 ? (
-                       recentSongs.map((song) => (
-                         <div key={song.id} className="flex items-center gap-3 bg-white/80 p-3 rounded-lg border border-gray-100 shadow-sm animate-fade-in-up">
-                           <span className="material-icons text-gray-400 text-base">music_note</span>
-                           <span className="text-sm text-gray-600 font-medium">{song.song_name}</span>
-                         </div>
-                       ))
-                     ) : (
-                       <>
-                         <div className="flex items-center gap-3 bg-white/80 p-3 rounded-lg border border-gray-100 shadow-sm">
-                           <span className="material-icons text-gray-400 text-base">history</span>
-                           <span className="text-sm text-gray-400 font-medium italic">Nessuna canzone ancora... Sii il primo!</span>
-                         </div>
-                       </>
-                     )}
+                {/* Search Results */}
+                {results.length > 0 && (
+                    <div className="w-full bg-white rounded-2xl shadow-xl border border-gray-100 max-h-[400px] overflow-y-auto">
+                        {results.map((track) => (
+                            <div 
+                                key={track.id} 
+                                className="flex items-center gap-4 p-4 border-b border-gray-100 last:border-none hover:bg-gray-50 transition-colors"
+                            >
+                                {track.image && (
+                                    <img 
+                                        src={track.image} 
+                                        alt={track.album}
+                                        className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                                    />
+                                )}
+                                <div className="flex-1 min-w-0">
+                                    <p className="font-sans font-semibold text-gray-800 truncate">{track.name}</p>
+                                    <p className="font-serif text-sm text-gray-500 truncate">{track.artist}</p>
+                                </div>
+                                <button
+                                    onClick={() => addTrackToPlaylist(track)}
+                                    disabled={isAdding === track.id || addedTracks.has(track.id)}
+                                    className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                                        addedTracks.has(track.id) 
+                                            ? 'bg-green-100 text-green-600' 
+                                            : 'bg-[#1DB954] hover:bg-[#1ed760] text-white'
+                                    } disabled:opacity-50`}
+                                >
+                                    {isAdding === track.id ? (
+                                        <span className="material-icons text-xl animate-spin">autorenew</span>
+                                    ) : addedTracks.has(track.id) ? (
+                                        <span className="material-icons text-xl">check</span>
+                                    ) : (
+                                        <span className="material-icons text-xl">add</span>
+                                    )}
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* Empty state */}
+                {!query && results.length === 0 && (
+                    <div className="w-full bg-white/50 rounded-2xl p-6 border border-dashed border-gray-200 text-center">
+                        <span className="material-icons text-4xl text-gray-300 mb-2">queue_music</span>
+                        <p className="font-serif text-gray-400">Cerca una canzone per aggiungerla alla playlist</p>
+                    </div>
+                )}
                 </div>
             </div>
 
