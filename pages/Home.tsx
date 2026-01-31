@@ -1,6 +1,38 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+
+interface TimeLeft {
+  giorni: number;
+  ore: number;
+  minuti: number;
+  secondi: number;
+}
 
 const Home: React.FC = () => {
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>({ giorni: 0, ore: 0, minuti: 0, secondi: 0 });
+
+  useEffect(() => {
+    const weddingDate = new Date('2026-05-30T00:00:00');
+
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const difference = weddingDate.getTime() - now.getTime();
+
+      if (difference > 0) {
+        setTimeLeft({
+          giorni: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          ore: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          minuti: Math.floor((difference / 1000 / 60) % 60),
+          secondi: Math.floor((difference / 1000) % 60),
+        });
+      }
+    };
+
+    calculateTimeLeft();
+    const timer = setInterval(calculateTimeLeft, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const scrollToRsvp = () => {
     document.getElementById('rsvp')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -44,8 +76,29 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* RSVP Button - Positioned below image */}
-      <div className="relative z-20 mt-8 animate-fade-in-up flex flex-col items-center gap-6">
+      {/* Countdown Timer - Below image */}
+      <div className="relative z-20 mt-8 animate-fade-in-up flex justify-center gap-3 md:gap-6">
+        {[
+          { value: timeLeft.giorni, label: 'Giorni' },
+          { value: timeLeft.ore, label: 'Ore' },
+          { value: timeLeft.minuti, label: 'Minuti' },
+          { value: timeLeft.secondi, label: 'Secondi' },
+        ].map((item, index) => (
+          <div key={index} className="flex flex-col items-center">
+            <div className="bg-white/80 backdrop-blur-sm border border-primary/30 rounded-xl px-3 py-2 md:px-5 md:py-3 shadow-lg min-w-[60px] md:min-w-[80px]">
+              <span className="text-2xl md:text-4xl font-serif text-secondary font-semibold tabular-nums">
+                {String(item.value).padStart(2, '0')}
+              </span>
+            </div>
+            <span className="text-[10px] md:text-xs uppercase tracking-wider text-secondary/70 font-sans mt-1 md:mt-2">
+              {item.label}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* RSVP Button - Positioned below countdown */}
+      <div className="relative z-20 mt-6 animate-fade-in-up flex flex-col items-center gap-6">
         <button 
           onClick={scrollToRsvp}
           className="bg-primary hover:bg-[#b08d4b] text-white font-sans uppercase text-xs tracking-[0.2em] px-12 py-4 rounded-full shadow-lg transition-all hover:scale-105 active:scale-95"
