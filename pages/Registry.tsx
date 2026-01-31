@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// Supabase Edge Function URL
-const SUPABASE_URL = 'https://hujhpdqrsrldaulwisoq.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1amhwZHFyc3JsZGF1bHdpc29xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1MDkwOTgsImV4cCI6MjA4NDA4NTA5OH0.PqdRh7v8WgAqQ_LNz_M132aXxl4Gk1fCDoIOohqbioA';
+// Supabase configuration from environment variables
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 // Bank details - update with your actual information
 const BANK_DETAILS = {
