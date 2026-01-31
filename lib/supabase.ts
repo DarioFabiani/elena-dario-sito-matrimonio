@@ -36,10 +36,3 @@ export interface GuestResponse {
   accommodation_days?: string[];
   submitted_at?: string;
 }
-
-export interface SongRequest {
-  id?: number;
-  song_name: string;
-  submitted_by?: string;
-  created_at?: string;
-}

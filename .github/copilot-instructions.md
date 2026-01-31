@@ -11,8 +11,15 @@ Single-page React wedding website for Elena & Dario with smooth scroll navigatio
 - **Active State Tracking**: Navigation highlights current section using scroll position + 200px offset
 - **Section Order**: Must match between `navItems` array and render order: `home → story → gallery → details → logistics → rsvp → registry`
 
+### Password Protection
+- **PasswordGate Component**: Wraps entire app in `App.tsx`
+- Uses `VITE_SITE_PASSWORD` env variable (fallback: `elena-dario-2026`)
+- Session-based auth stored in `sessionStorage` under `wedding_auth` key
+- Shows loading state, then either login form or children content
+
 ### Page Structure
 - All pages in `/pages` folder: `Home.tsx`, `Story.tsx`, `Gallery.tsx`, `Details.tsx`, `Logistics.tsx`, `Rsvp.tsx`, `Registry.tsx`
+- Components in `/components` folder: `PasswordGate.tsx`
 - Each page is a standalone component with full-screen min-height (`min-h-screen`)
 - Pages handle their own internal state (e.g., RSVP form steps, gallery lightbox)
 
@@ -50,16 +57,29 @@ paper: "#FFFDF5"      // Off-white for cards
 ### RSVP Form (Rsvp.tsx)
 - **3-step flow**: `search → form → success`
 - **Real Backend**: Supabase integration for data persistence
-- **Guest State**: Array of `{ name, isAttending, dietaryNotes }`
-- Allows multiple guests per submission with individual attendance toggles
-- Family group determined by search name
+- **Guest State**: Array of `GuestFormState` with `{ guest, isAttending, dietaryNotes, plusOnes[] }`
+- **Plus Ones**: Each guest can add multiple +1s with name and dietary notes
+- **Transport Options**: Collects transport method for attending guests
+- **Accommodation**: Collects accommodation needs (`yes`/`no`/`unknown`) and specific days
+- Family group determined by search name (searches by name parts, returns entire group)
+- Upsert logic - guests can update their response
 - Error handling for failed submissions with user feedback
 
 ### Gallery (Gallery.tsx)
-- Masonry-style grid with `auto-rows-[300px]`
-- Some items span 2 columns: `md:col-span-2` (items at index 1, 4)
-- Lightbox opens on click (uses `selectedImage` state)
+- **Horizontal Scroll Rows**: Two rows with `flex` + `overflow-x-auto`
+- Photos stored in Supabase Storage
+- Lightbox opens on click (uses `selectedPhoto` state)
 - ESC key closes lightbox
+- **Spotify Easter Egg**: Some photos have `spotifyTrackId` - clicking triggers music via `onPlayMusic` callback
+- App.tsx manages persistent Spotify player with `musicTrack` state
+
+### Spotify Integration
+- **Edge Functions** in `supabase/functions/`:
+  - `search-music`: Search Spotify tracks (client credentials auth)
+  - `add-track`: Add tracks to wedding playlist (refresh token auth)
+- Requires Spotify API credentials as env variables:
+  - `SPOTIFY_CLIENT_ID`, `SPOTIFY_CLIENT_SECRET`
+  - `SPOTIFY_REFRESH_TOKEN`, `SPOTIFY_PLAYLIST_ID` (for add-track)
 
 ## Development Workflow
 
@@ -72,13 +92,25 @@ npm run preview      # Preview production build
 ```
 
 ### Backend (Supabase)
-- **Database**: PostgreSQL with `guests` and `rsvp_submissions` tables
+- **Database**: PostgreSQL with `guests` and `guest_responses` tables
+- **Storage**: Wedding photos hosted in Supabase Storage bucket `wedding-photos`
+- **Edge Functions**: Spotify integration (`search-music`, `add-track`)
 - **Authentication**: Row Level Security (RLS) for data protection
-- **Client**: `lib/supabase.ts` exports configured Supabase client
+- **Client**: `lib/supabase.ts` exports configured Supabase client + TypeScript interfaces
 - **Environment Variables**: 
   - `VITE_SUPABASE_URL` - Your Supabase project URL
   - `VITE_SUPABASE_ANON_KEY` - Public anon key (safe for client-side)
+  - `VITE_SITE_PASSWORD` - Site access password (optional, fallback: `elena-dario-2026`)
 - See [SETUP.md](SETUP.md) for complete Supabase setup instructions
+
+### Database Schema
+```sql
+-- Main tables:
+guests (id, name, group_name, created_at)
+guest_responses (id, guest_id, is_attending, dietary_notes, transport_method, 
+                 accommodation_needs, accommodation_days[], plus_ones_json, 
+                 has_plus_one, plus_one_name, plus_one_dietary_notes, submitted_at)
+```
 
 ### Deployment (Vercel)
 - Optimized for Vercel deployment with zero configuration
@@ -113,5 +145,7 @@ npm run preview      # Preview production build
 - Navigation active state breaks if section order differs between `navItems`, `sections` array, and render order
 - Smooth scroll requires actual DOM element IDs matching navigation hrefs
 - Material Icons need full CDN link in index.html (already included)
-- Image URLs are external (Googleusercontent, Unsplash) - no local assets folder
+- Photos are hosted in Supabase Storage bucket (URLs contain `supabase.co/storage/v1/object/public/wedding-photos/`)
 - Italian language throughout (labels, placeholders, content)
+- Gallery photos with `spotifyTrackId` trigger music player when clicked
+- Password gate uses sessionStorage - user must re-enter password after closing browser
