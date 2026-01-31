@@ -103,7 +103,7 @@ const Logistics: React.FC = () => {
                    <ul className="space-y-4">
                      <li className="flex items-center gap-4 justify-center md:justify-start">
                         <span className="material-icons text-tertiary text-3xl">checkroom</span>
-                        <span className="text-lg">La cena sarà all'aperto - consigliato abbigliamento adatto alle temperature serali</span>
+                        <span className="text-lg">Consigliato abbigliamento adatto a temperature serali</span>
                      </li>
                     <li className="flex items-center gap-4 justify-center md:justify-start">
                       <span className="material-icons text-tertiary text-3xl">nightlife</span>

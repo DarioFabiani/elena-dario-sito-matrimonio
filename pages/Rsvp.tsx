@@ -407,7 +407,7 @@ const Rsvp: React.FC = () => {
                       {[
                         { id: 'car', icon: 'directions_car', label: 'Auto' },
                         { id: 'train', icon: 'train', label: 'Treno' },
-                        { id: 'other', icon: 'more_horiz', label: 'Altro' },
+                        { id: 'unknown', icon: 'help_outline', label: 'Non lo so' },
                       ].map((opt) => (
                         <label 
                           key={opt.id}
@@ -436,6 +436,16 @@ const Rsvp: React.FC = () => {
                          <span className="material-icons shrink-0 text-2xl">info</span>
                          <p>
                            Ottima scelta! Vi ricontatteremo più avanti per conoscere l'orario di arrivo esatto e organizzare la navetta dalla stazione.
+                         </p>
+                      </div>
+                    )}
+
+                    {/* Unknown Transport Message */}
+                    {transport === 'unknown' && (
+                      <div className="mt-6 p-5 bg-tertiary/20 rounded-xl text-secondary text-base font-medium flex gap-4 animate-fade-in-up items-start border border-tertiary/30">
+                         <span className="material-icons shrink-0 text-2xl">notifications_active</span>
+                         <p>
+                           Nessun problema! Vi ricontatteremo più avanti per sapere come raggiungerete l'evento.
                          </p>
                       </div>
                     )}
