@@ -157,12 +157,12 @@ const Registry: React.FC = () => {
         </div>
       )}
       
-      <main className="relative z-10 flex flex-col items-center px-6 max-w-4xl mx-auto w-full">
+      <main className="relative z-10 flex flex-col items-center px-4 sm:px-6 max-w-4xl mx-auto w-full overflow-hidden">
         
-        <div className="grid md:grid-cols-2 gap-16 w-full items-start">
+        <div className="grid md:grid-cols-2 gap-16 w-full items-start overflow-hidden">
             
             {/* Music Section - Spotify Integration */}
-            <div className="flex flex-col items-center text-center md:items-start md:text-left">
+            <div className="flex flex-col items-center text-center md:items-start md:text-left min-w-0 overflow-hidden">
                 <div className="bg-[#1DB954]/10 p-5 rounded-full mb-6 inline-block">
                     <svg className="w-12 h-12 text-[#1DB954]" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
@@ -174,7 +174,7 @@ const Registry: React.FC = () => {
                 </p>
 
                 {/* Search Container */}
-                <div className="w-full relative" ref={containerRef}>
+                <div className="w-full max-w-full relative overflow-hidden" ref={containerRef}>
                     {/* Search Input */}
                     <div className="w-full relative mb-4">
                     <input 
@@ -195,11 +195,11 @@ const Registry: React.FC = () => {
                 
                 {/* Search Results */}
                 {results.length > 0 && (
-                    <div className="w-full bg-white rounded-2xl shadow-xl border border-gray-100 max-h-[400px] overflow-y-auto">
+                    <div className="w-full max-w-full bg-white rounded-2xl shadow-xl border border-gray-100 max-h-[400px] overflow-y-auto overflow-x-hidden">
                         {results.map((track) => (
                             <div 
                                 key={track.id} 
-                                className="flex items-center gap-2 sm:gap-4 p-2 sm:p-4 border-b border-gray-100 last:border-none hover:bg-gray-50 transition-colors min-w-0"
+                                className="flex items-center gap-2 sm:gap-4 p-2 sm:p-4 border-b border-gray-100 last:border-none hover:bg-gray-50 transition-colors"
                             >
                                 {track.image && (
                                     <img 
@@ -208,7 +208,7 @@ const Registry: React.FC = () => {
                                         className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover flex-shrink-0"
                                     />
                                 )}
-                                <div className="flex-1 min-w-0 overflow-hidden">
+                                <div className="flex-1 w-0 overflow-hidden">
                                     <p className="font-sans font-semibold text-gray-800 truncate text-sm sm:text-base">{track.name}</p>
                                     <p className="font-serif text-xs sm:text-sm text-gray-500 truncate">{track.artist}</p>
                                 </div>
@@ -219,7 +219,7 @@ const Registry: React.FC = () => {
                                         addedTracks.has(track.id) 
                                             ? 'bg-green-100 text-green-600' 
                                             : 'bg-[#1DB954] hover:bg-[#1ed760] active:scale-95 text-white'
-                                    } disabled:opacity-50 touch-manipulation`}
+                                    } disabled:opacity-50 touch-manipulation ml-2`}
                                 >
                                     {isAdding === track.id ? (
                                         <span className="material-icons text-lg sm:text-xl animate-spin">autorenew</span>
