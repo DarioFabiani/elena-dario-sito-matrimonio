@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { supabase, Guest, GuestResponse } from '../lib/supabase';
 
 interface PlusOne {
@@ -14,6 +14,7 @@ interface GuestFormState {
 }
 
 const Rsvp: React.FC = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
   const [step, setStep] = useState<'search' | 'form' | 'success'>('search');
   const [searchName, setSearchName] = useState('');
   const [groupName, setGroupName] = useState('');
@@ -143,6 +144,10 @@ const Rsvp: React.FC = () => {
       }
 
       setStep('success');
+      // Scroll to top of RSVP section to ensure user sees the success message
+      setTimeout(() => {
+        containerRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
     } catch (err: any) {
       console.error('Error submitting RSVP:', err);
       setError(err.message || 'Errore durante l\'invio. Riprova.');
@@ -194,7 +199,7 @@ const Rsvp: React.FC = () => {
   };
 
   return (
-    <div className="bg-background min-h-screen flex items-center justify-center py-20 relative overflow-hidden text-gray-800">
+    <div ref={containerRef} className="bg-background min-h-screen flex items-center justify-center py-20 relative overflow-hidden text-gray-800">
       <div className="absolute top-0 w-full h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
       
       {/* Background Decor */}
