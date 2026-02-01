@@ -58,7 +58,7 @@ const Logistics: React.FC = () => {
                   <p className="text-gray-800">Google Maps potrebbe suggerire strade provinciali accidentate.</p>
                   <p className="mt-2 font-bold text-gray-800">Itinerario consigliato:</p>
                   <ol className="list-decimal list-inside pl-1 mt-1 text-gray-800">
-                    <li>Inserire destinazione <strong>Palinuro</strong>.</li>
+                    <li>Inserire destinazione <strong>Palinuro</strong>, SS18Var, uscire a Poderia.</li>
                     <li>Arrivati a Palinuro, inserire <strong>Marina di Pisciotta</strong>.</li>
                   </ol>
                 </div>
