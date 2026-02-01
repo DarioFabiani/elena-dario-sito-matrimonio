@@ -631,7 +631,7 @@ const Rsvp: React.FC = () => {
                <h3 className="font-display text-5xl text-secondary mb-4">Grazie!</h3>
                <p className="text-gray-700 font-serif text-xl leading-relaxed max-w-sm mx-auto font-medium">
                  {totalAttending > 0 
-                   ? `Abbiamo ricevuto la conferma per ${totalAttending} ${totalAttending === 1 ? 'persona' : 'persone'}. Non vediamo l'ora di festeggiare questo giorno speciale insieme a voi!`
+                   ? `Abbiamo ricevuto la conferma per ${totalAttending} ${totalAttending === 1 ? 'persona' : 'persone'}. Inserite una canzone nella playlist qua sotto! Non vediamo l'ora di festeggiare questo giorno speciale insieme a voi!`
                    : 'Abbiamo ricevuto la tua risposta. Ci mancherete, ma capiamo!'
                  }
                </p>
