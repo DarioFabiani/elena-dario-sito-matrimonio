@@ -251,7 +251,7 @@ const Registry: React.FC = () => {
                     <p className="text-gray-800 font-serif text-lg font-medium">
                 La vostra presenza è per noi il dono più prezioso.
                 Se desiderate farci un regalo, potete scegliere liberamente un pensiero a vostra scelta.
-                In alternativa, se preferite, potete contribuire al nostro viaggio di nozze. In basso i dettagli bancari.
+                In alternativa, se preferite, potete contribuire al nostro viaggio di nozze.
                     </p>
                 </div>
 
