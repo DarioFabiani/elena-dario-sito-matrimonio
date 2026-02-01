@@ -16,7 +16,7 @@ const Story: React.FC = () => {
       <div className="max-w-5xl mx-auto px-6 relative z-10 w-full">
         <div className="text-center mb-16">
           <h2 className="font-display text-6xl md:text-7xl text-primary mb-6">La Nostra Storia</h2>
-          <p className="font-serif text-2xl italic text-gray-700 font-medium">Tre momenti che hanno cambiato tutto.</p>
+          {/* <p className="font-serif text-2xl italic text-gray-700 font-medium">Tre momenti che hanno cambiato tutto.</p> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
