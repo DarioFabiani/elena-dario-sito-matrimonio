@@ -77,7 +77,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
               <div className="h-px bg-primary/30 w-12"></div>
             </div>
             <p className="text-secondary/70 font-serif text-lg">
-              Inserisci la password per accedere al sito
+              Inserisci la password che ti abbiamo inviato via messaggio per accedere al sito
             </p>
           </div>
 

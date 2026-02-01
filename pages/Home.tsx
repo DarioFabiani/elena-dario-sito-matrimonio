@@ -99,12 +99,12 @@ const Home: React.FC = () => {
 
       {/* RSVP Button - Positioned below countdown */}
       <div className="relative z-20 mt-6 animate-fade-in-up flex flex-col items-center gap-6">
-        <button 
+        {/* <button 
           onClick={scrollToRsvp}
           className="bg-primary hover:bg-[#b08d4b] text-white font-sans uppercase text-xs tracking-[0.2em] px-12 py-4 rounded-full shadow-lg transition-all hover:scale-105 active:scale-95"
         >
           Conferma Presenza
-        </button>
+        </button> */}
         {/* Scroll Indicator aligned with button */}
         <div className="flex flex-col items-center gap-1 opacity-40 animate-bounce">
           <span className="text-[10px] uppercase tracking-widest text-secondary font-sans">Scorri</span>
