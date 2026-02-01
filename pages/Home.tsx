@@ -38,7 +38,7 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col items-center justify-center pt-24 lg:pt-0 overflow-hidden bg-[#FDFBF7]">
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center pt-24 lg:pt-28 overflow-hidden bg-[#FDFBF7]">
       
       {/* Main Image Container with Text Overlay */}
       <div className="relative z-10 w-full max-w-screen-2xl mx-auto flex flex-col lg:block items-center justify-center px-6 lg:px-12">
