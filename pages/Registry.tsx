@@ -166,7 +166,7 @@ const Registry: React.FC = () => {
                 </div>
                 <h2 className="font-display text-5xl md:text-6xl text-secondary mb-5">Balla con Noi</h2>
                 <p className="text-gray-800 font-serif mb-8 text-lg md:text-xl leading-relaxed font-medium">
-                    Cerca la tua canzone preferita e aggiungila direttamente alla nostra playlist Spotify!
+                    Cerca la tua canzone preferita e aggiungila direttamente alla nostra playlist <a href="https://open.spotify.com/playlist/1Z0CK4ZxKrkmAd4Q9qSGJi?si=b4a519ad9f7f4e09" target="_blank" rel="noopener noreferrer" className="text-[#1DB954] underline">Spotify</a>!
                 </p>
 
                 {/* Search Container */}
