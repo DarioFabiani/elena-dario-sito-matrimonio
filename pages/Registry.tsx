@@ -199,18 +199,18 @@ const Registry: React.FC = () => {
                         {results.map((track) => (
                             <div 
                                 key={track.id} 
-                                className="flex items-center gap-4 p-4 border-b border-gray-100 last:border-none hover:bg-gray-50 transition-colors"
+                                className="flex items-center gap-2 sm:gap-4 p-2 sm:p-4 border-b border-gray-100 last:border-none hover:bg-gray-50 transition-colors min-w-0"
                             >
                                 {track.image && (
                                     <img 
                                         src={track.image} 
                                         alt={track.album}
-                                        className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                                        className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover flex-shrink-0"
                                     />
                                 )}
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-sans font-semibold text-gray-800 truncate">{track.name}</p>
-                                    <p className="font-serif text-sm text-gray-500 truncate">{track.artist}</p>
+                                <div className="flex-1 min-w-0 overflow-hidden">
+                                    <p className="font-sans font-semibold text-gray-800 truncate text-sm sm:text-base">{track.name}</p>
+                                    <p className="font-serif text-xs sm:text-sm text-gray-500 truncate">{track.artist}</p>
                                 </div>
                                 <button
                                     onClick={() => addTrackToPlaylist(track)}
@@ -218,15 +218,15 @@ const Registry: React.FC = () => {
                                     className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all ${
                                         addedTracks.has(track.id) 
                                             ? 'bg-green-100 text-green-600' 
-                                            : 'bg-[#1DB954] hover:bg-[#1ed760] text-white'
-                                    } disabled:opacity-50`}
+                                            : 'bg-[#1DB954] hover:bg-[#1ed760] active:scale-95 text-white'
+                                    } disabled:opacity-50 touch-manipulation`}
                                 >
                                     {isAdding === track.id ? (
-                                        <span className="material-icons text-xl animate-spin">autorenew</span>
+                                        <span className="material-icons text-lg sm:text-xl animate-spin">autorenew</span>
                                     ) : addedTracks.has(track.id) ? (
-                                        <span className="material-icons text-xl">check</span>
+                                        <span className="material-icons text-lg sm:text-xl">check</span>
                                     ) : (
-                                        <span className="material-icons text-xl">add</span>
+                                        <span className="material-icons text-lg sm:text-xl">add</span>
                                     )}
                                 </button>
                             </div>
