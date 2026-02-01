@@ -10,8 +10,10 @@ import Gallery from './pages/Gallery';
 
 const Navigation = () => {
   const [activeSection, setActiveSection] = useState('home');
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const scrollToSection = (id: string) => {
+    setIsMenuOpen(false);
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -47,25 +49,57 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed top-0 w-full z-50 px-6 py-6 bg-background/90 backdrop-blur-sm border-b border-primary/10">
-      <div className="max-w-5xl mx-auto relative flex justify-between items-center overflow-x-auto no-scrollbar">
-        {/* The "Thread" Line */}
-        <div className="absolute top-1/2 left-0 w-full h-[1px] bg-primary/40 -z-10 transform -translate-y-1/2 min-w-[700px]"></div>
-        
-        {navItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => scrollToSection(item.id)}
-            className={`
-              relative px-3 py-1 bg-background text-xs md:text-sm font-serif tracking-widest uppercase transition-all duration-300 whitespace-nowrap
-              ${activeSection === item.id ? 'text-primary scale-110 font-bold' : 'text-gray-400 hover:text-primary'}
-            `}
-          >
-            {item.label}
-          </button>
-        ))}
+    <>
+      <nav className="hidden md:block fixed top-0 w-full z-50 px-6 py-6 bg-background/90 backdrop-blur-sm border-b border-primary/10">
+        <div className="max-w-5xl mx-auto relative flex justify-between items-center overflow-x-auto no-scrollbar">
+          {/* The "Thread" Line */}
+          <div className="absolute top-1/2 left-0 w-full h-[1px] bg-primary/40 -z-10 transform -translate-y-1/2 min-w-[700px]"></div>
+          
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => scrollToSection(item.id)}
+              className={`
+                relative px-3 py-1 bg-background text-xs md:text-sm font-serif tracking-widest uppercase transition-all duration-300 whitespace-nowrap
+                ${activeSection === item.id ? 'text-primary scale-110 font-bold' : 'text-gray-400 hover:text-primary'}
+              `}
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      {/* Mobile Navigation */}
+      <nav className="md:hidden fixed top-0 w-full z-50 px-6 py-4 bg-background/90 backdrop-blur-sm border-b border-primary/10 flex justify-between items-center">
+        <span className="font-display text-2xl text-secondary">Elena & Dario</span>
+        <button 
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="text-secondary focus:outline-none"
+        >
+          <span className="material-icons text-3xl">{isMenuOpen ? 'close' : 'menu'}</span>
+        </button>
+      </nav>
+
+      {/* Mobile Menu Overlay */}
+      <div className={`md:hidden fixed inset-0 z-40 bg-background/95 backdrop-blur-xl transition-transform duration-300 ease-in-out pt-24 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+        <div className="flex flex-col items-center space-y-8 p-8 h-full overflow-y-auto">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => scrollToSection(item.id)}
+              className={`
+                text-lg font-serif tracking-widest uppercase transition-colors duration-300
+                ${activeSection === item.id ? 'text-primary font-bold scale-110' : 'text-secondary hover:text-primary'}
+              `}
+            >
+              {item.label}
+            </button>
+          ))}
+          <div className="w-16 h-[1px] bg-primary/40 my-8"></div>
+        </div>
       </div>
-    </nav>
+    </>
   );
 };
 
