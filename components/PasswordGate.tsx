@@ -23,7 +23,12 @@ export default function PasswordGate({ children }: PasswordGateProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const correctPassword = import.meta.env.VITE_SITE_PASSWORD || 'elena-dario-2026';
+    const correctPassword = import.meta.env.VITE_SITE_PASSWORD;
+    
+    if (!correctPassword) {
+      setError('Configurazione del sito incompleta. Contatta gli sposi.');
+      return;
+    }
     
     if (password === correctPassword) {
       sessionStorage.setItem(SESSION_KEY, password);
