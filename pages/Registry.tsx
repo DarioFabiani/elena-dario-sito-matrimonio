@@ -246,7 +246,7 @@ const Registry: React.FC = () => {
 
             {/* Gift Section */}
             <div className="flex flex-col items-center md:pl-12 border-t md:border-t-0 md:border-l border-primary/20 pt-12 md:pt-0">
-                <div className="text-center mb-10">
+              <div className="text-center mb-10 pt-4">
                     <h2 className="font-display text-4xl md:text-5xl text-primary mb-4">Lista Nozze</h2>
                     <p className="text-gray-800 font-serif text-lg font-medium">
                 La vostra presenza è per noi il dono più prezioso.
