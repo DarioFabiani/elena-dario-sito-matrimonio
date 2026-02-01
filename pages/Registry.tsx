@@ -4,6 +4,10 @@ import React, { useState, useEffect, useRef } from 'react';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
+if (!SUPABASE_ANON_KEY) {
+  console.error('VITE_SUPABASE_ANON_KEY is missing! Spotify integration will fail.');
+}
+
 // Bank details - update with your actual information
 const BANK_DETAILS = {
   intestatario: 'Elena Costagliola',

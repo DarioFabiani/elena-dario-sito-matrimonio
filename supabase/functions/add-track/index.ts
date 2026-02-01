@@ -8,8 +8,8 @@ const SPOTIFY_PLAYLIST_ID = Deno.env.get("SPOTIFY_PLAYLIST_ID")!;
 let cachedUserToken: string | null = null;
 let userTokenExpiry: number = 0;
 
-async function getUserAccessToken(): Promise<string> {
-  if (cachedUserToken && Date.now() < userTokenExpiry) {
+async function getUserAccessToken(forceRefresh = false): Promise<string> {
+  if (!forceRefresh && cachedUserToken && Date.now() < userTokenExpiry) {
     return cachedUserToken;
   }
 
@@ -25,9 +25,9 @@ async function getUserAccessToken(): Promise<string> {
   });
 
   if (!response.ok) {
-    const errorData = await response.json();
-    console.error("Token refresh error:", errorData);
-    throw new Error("Failed to refresh Spotify access token");
+    const errorText = await response.text();
+    console.error(`Token refresh error (Status ${response.status}):`, errorText);
+    throw new Error(`Failed to refresh Spotify access token: ${response.status} ${response.statusText}`);
   }
 
   const data = await response.json();
@@ -60,7 +60,8 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const { trackUri } = await req.json();
+    const body = await req.json();
+    const { trackUri } = body;
 
     if (!trackUri) {
       return new Response(JSON.stringify({ error: "Track URI is required" }), {
@@ -72,27 +73,47 @@ Deno.serve(async (req: Request) => {
       });
     }
 
-    const token = await getUserAccessToken();
+    let token = await getUserAccessToken();
     
-    // Add track to playlist
-    const response = await fetch(
-      `https://api.spotify.com/v1/playlists/${SPOTIFY_PLAYLIST_ID}/tracks`,
-      {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          uris: [trackUri],
-        }),
-      }
-    );
+    // Function to add track
+    const addTrack = async (accessToken: string) => {
+      return await fetch(
+        `https://api.spotify.com/v1/playlists/${SPOTIFY_PLAYLIST_ID}/tracks`,
+        {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            uris: [trackUri],
+          }),
+        }
+      );
+    }
+
+    // Try adding track
+    let response = await addTrack(token);
+
+    // If 401, token might be expired despite our check, try forcing refresh
+    if (response.status === 401) {
+      console.log("Received 401 from Spotify, retrying with fresh token...");
+      token = await getUserAccessToken(true);
+      response = await addTrack(token);
+    }
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Add track error:", errorData);
-      return new Response(JSON.stringify({ error: "Failed to add track", details: errorData }), {
+      const errorText = await response.text();
+      console.error(`Add track error (Status ${response.status}):`, errorText);
+      
+      let errorDetails = errorText;
+      try {
+        errorDetails = JSON.parse(errorText);
+      } catch (e) {
+        // ignore
+      }
+
+      return new Response(JSON.stringify({ error: "Failed to add track", details: errorDetails }), {
         status: response.status,
         headers: {
           "Content-Type": "application/json",
@@ -110,7 +131,7 @@ Deno.serve(async (req: Request) => {
       },
     });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error in add-track function:", error);
     return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 500,
       headers: {
