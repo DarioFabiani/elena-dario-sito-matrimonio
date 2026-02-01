@@ -249,7 +249,9 @@ const Registry: React.FC = () => {
                 <div className="text-center mb-10">
                     <h2 className="font-display text-4xl md:text-5xl text-primary mb-4">Lista Nozze</h2>
                     <p className="text-gray-800 font-serif text-lg font-medium">
-                        La vostra presenza è per noi il dono più prezioso. Se desiderate farci un regalo, potete scegliere liberamente un pensiero a vostra scelta oppure, se preferite, contribuire al nostro viaggio di nozze e alla futura casa insieme.
+                La vostra presenza è per noi il dono più prezioso.
+                Se desiderate farci un regalo, potete scegliere liberamente un pensiero a vostra scelta.
+                In alternativa, se preferite, potete contribuire al nostro viaggio di nozze. In basso i dettagli bancari.
                     </p>
                 </div>
 

@@ -1,16 +1,16 @@
 import React from 'react';
 
 const TimelineItem = ({ time, title, location, description, icon, image }: any) => (
-  <div className="grid grid-cols-[56px_1fr] gap-x-6">
-    <div className="flex flex-col items-center">
+  <div className="grid grid-cols-[56px_1fr] gap-x-4 md:gap-x-6 w-full">
+    <div className="flex flex-col items-center w-[56px] shrink-0">
       <div className="w-[3px] h-6 bg-gradient-to-b from-transparent to-primary"></div>
-      <div className="flex items-center justify-center size-14 rounded-full bg-paper border-2 border-primary z-10 shadow-md shrink-0">
+      <div className="flex items-center justify-center w-14 h-14 rounded-full bg-paper border-2 border-primary z-10 shadow-md shrink-0">
         <span className="material-icons text-primary text-3xl">{icon}</span>
       </div>
       <div className="w-[3px] bg-primary/30 h-full grow"></div>
     </div>
     
-    <div className="pb-16 pt-2 group">
+    <div className="pb-16 pt-2 group min-w-0">
       {/* Time Display - Significantly improved visibility */}
       <div className="flex items-center gap-3 mb-3">
          <span className="inline-block px-5 py-2 rounded-lg bg-secondary text-white text-xl font-bold tracking-widest font-serif shadow-md">
