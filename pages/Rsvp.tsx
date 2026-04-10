@@ -216,7 +216,7 @@ const Rsvp: React.FC = () => {
           <div className="text-center mb-8 animate-fade-in-up">
             <h2 className="font-display text-5xl md:text-6xl text-secondary mb-3">RSVP</h2>
             <p className="font-serif text-gray-700 font-medium text-lg">
-              Per favore conferma la tua presenza <span className="inline-flex items-center justify-center rounded-full bg-primary/10 px-4 py-1 text-primary font-semibold">entro il 28 Febbraio 2026.</span>
+              Per favore conferma la tua presenza <span className="inline-flex items-center justify-center rounded-full bg-primary/10 px-4 py-1 text-primary font-semibold">entro il 30 Aprile 2026.</span>
             </p>
             <p className="font-serif text-gray-700 font-medium text-lg">
               Nel caso di necessità, <strong>potrai cambiare la tua risposta in qualsiasi momento.</strong>
