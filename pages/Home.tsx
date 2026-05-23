@@ -11,7 +11,7 @@ const Home: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ giorni: 0, ore: 0, minuti: 0, secondi: 0 });
 
   useEffect(() => {
-    const weddingDate = new Date('2026-05-30T00:00:00');
+    const weddingDate = new Date('2026-05-30T16:00:00');
 
     const calculateTimeLeft = () => {
       const now = new Date();
@@ -32,10 +32,6 @@ const Home: React.FC = () => {
 
     return () => clearInterval(timer);
   }, []);
-
-  const scrollToRsvp = () => {
-    document.getElementById('rsvp')?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
     <div className="relative min-h-screen w-full flex flex-col items-center justify-center pt-24 lg:pt-28 overflow-hidden bg-[#FDFBF7]">

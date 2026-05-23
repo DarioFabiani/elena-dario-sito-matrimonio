@@ -69,7 +69,9 @@ const Logistics: React.FC = () => {
           <InfoCard icon="hotel" title="Pernottamento">
             <div className="space-y-4">
               <p><strong>Villaggio Club "La Marée"</strong>.</p>
-              
+              <p className="font-extrabold text-lg text-black mt-2 underline">
+                Il pagamento avviene al check-in.
+              </p>
               <div className="bg-primary/10 p-5 rounded-xl border border-primary/30">
                 <h4 className="font-bold text-primary text-lg mb-1">🎁 Notte del 30 Maggio</h4>
                 <p className="text-secondary font-bold text-lg italic">Offerta da noi!</p>

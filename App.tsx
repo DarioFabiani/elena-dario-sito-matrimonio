@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import PasswordGate from './components/PasswordGate';
 import Home from './pages/Home';
 import Story from './pages/Story';
-import Rsvp from './pages/Rsvp';
 import Details from './pages/Details';
 import Registry from './pages/Registry';
 import Logistics from './pages/Logistics';
@@ -23,7 +21,7 @@ const Navigation = () => {
   useEffect(() => {
     const handleScroll = () => {
       // Order must match the render order
-      const sections = ['home', 'story', 'gallery', 'details', 'logistics', 'rsvp', 'registry'];
+      const sections = ['home', 'story', 'gallery', 'details', 'logistics', 'registry'];
       const scrollPosition = window.scrollY + 200;
 
       for (const section of sections) {
@@ -44,7 +42,6 @@ const Navigation = () => {
     { id: 'gallery', label: 'Memorie' },
     { id: 'details', label: 'Programma' },
     { id: 'logistics', label: 'Info' },
-    { id: 'rsvp', label: 'R.S.V.P.' },
     { id: 'registry', label: 'Lista Nozze' },
   ];
 
@@ -107,8 +104,7 @@ export default function App() {
   const [musicTrack, setMusicTrack] = useState<string | null>(null);
 
   return (
-    <PasswordGate>
-      <div className="min-h-screen bg-background text-gray-800 font-serif selection:bg-primary/20">
+    <div className="min-h-screen bg-background text-gray-800 font-serif selection:bg-primary/20">
         <Navigation />
         
         <section id="home" className="min-h-screen">
@@ -129,10 +125,6 @@ export default function App() {
 
         <section id="logistics" className="min-h-screen">
           <Logistics />
-        </section>
-        
-        <section id="rsvp" className="min-h-screen">
-          <Rsvp />
         </section>
         
         <section id="registry" className="min-h-screen">
@@ -169,6 +161,5 @@ export default function App() {
           </div>
         )}
       </div>
-    </PasswordGate>
   );
 }
