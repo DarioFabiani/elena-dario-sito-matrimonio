@@ -96,7 +96,7 @@ const Details: React.FC = () => {
                 image="https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/lunch_illustration.png"
                 details={[
                   "Presso «La Mareé» per chi è ospite nella struttura.",
-                  "Per le altre persone, buffet presso casa degli Sposi."
+                  "Per le altre persone, rinfresco presso casa degli Sposi."
                 ]}
             />
             <TimelineItem
