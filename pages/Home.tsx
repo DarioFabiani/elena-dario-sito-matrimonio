@@ -7,23 +7,31 @@ interface TimeLeft {
   secondi: number;
 }
 
+const WEDDING_DATE = new Date('2026-05-30T16:00:00');
+const YOUTUBE_URL = 'https://www.youtube.com/live/MI8sDJLjRAU';
+const IS_PREVIEW_LIVE = new URLSearchParams(globalThis.location.search).get('previewPhase') === 'live';
+const COVER_BEFORE = 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/E+D_base.jpg';
+const COVER_LIVE = 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/oggi_sposi_wide.png';
+
 const Home: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>({ giorni: 0, ore: 0, minuti: 0, secondi: 0 });
+  const [isLive, setIsLive] = useState(IS_PREVIEW_LIVE);
 
   useEffect(() => {
-    const weddingDate = new Date('2026-05-30T16:00:00');
-
     const calculateTimeLeft = () => {
       const now = new Date();
-      const difference = weddingDate.getTime() - now.getTime();
+      const difference = WEDDING_DATE.getTime() - now.getTime();
 
-      if (difference > 0) {
+      if (!IS_PREVIEW_LIVE && difference > 0) {
+        setIsLive(false);
         setTimeLeft({
           giorni: Math.floor(difference / (1000 * 60 * 60 * 24)),
           ore: Math.floor((difference / (1000 * 60 * 60)) % 24),
           minuti: Math.floor((difference / 1000 / 60) % 60),
           secondi: Math.floor((difference / 1000) % 60),
         });
+      } else {
+        setIsLive(true);
       }
     };
 
@@ -47,12 +55,23 @@ const Home: React.FC = () => {
           {/* Main Image Box */}
           <div className="relative rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white">
             <img 
-              src="https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/E+D_base.jpg"
+              src={isLive ? COVER_LIVE : COVER_BEFORE}
               alt="Elena & Dario - Save the Date"
               className="w-full h-auto max-h-[70vh] object-cover object-cover"
             />
             {/* Subtle inner vignette */}
             <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-[2rem] lg:rounded-[3rem] pointer-events-none"></div>
+            {/* YouTube live button - visible from 16:00 del 30 maggio */}
+            {isLive && (
+              <a
+                href={YOUTUBE_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2.5 bg-red-600 hover:bg-red-700 text-white font-sans font-semibold text-sm md:text-base px-6 py-3 rounded-full shadow-2xl transition-all hover:scale-105 active:scale-95 animate-fade-in-up whitespace-nowrap"
+              >
+                <span className="material-icons text-xl">play_circle</span>{' '}Segui la diretta
+              </a>
+            )}
           </div>
         </div>
         
@@ -73,25 +92,31 @@ const Home: React.FC = () => {
       </div>
 
       {/* Countdown Timer - Below image */}
-      <div className="relative z-20 mt-8 animate-fade-in-up flex justify-center gap-3 md:gap-6">
-        {[
-          { value: timeLeft.giorni, label: 'Giorni' },
-          { value: timeLeft.ore, label: 'Ore' },
-          { value: timeLeft.minuti, label: 'Minuti' },
-          { value: timeLeft.secondi, label: 'Secondi' },
-        ].map((item, index) => (
-          <div key={index} className="flex flex-col items-center">
-            <div className="bg-white/80 backdrop-blur-sm border border-primary/30 rounded-xl px-3 py-2 md:px-5 md:py-3 shadow-lg min-w-[60px] md:min-w-[80px]">
-              <span className="text-2xl md:text-4xl font-serif text-secondary font-semibold tabular-nums">
-                {String(item.value).padStart(2, '0')}
+      {isLive ? (
+        <div className="relative z-20 mt-8 animate-fade-in-up text-center px-4">
+          <p className="font-display text-4xl md:text-5xl text-secondary">Oggi è il grande giorno!</p>
+        </div>
+      ) : (
+        <div className="relative z-20 mt-8 animate-fade-in-up flex justify-center gap-3 md:gap-6">
+          {[
+            { value: timeLeft.giorni, label: 'Giorni' },
+            { value: timeLeft.ore, label: 'Ore' },
+            { value: timeLeft.minuti, label: 'Minuti' },
+            { value: timeLeft.secondi, label: 'Secondi' },
+          ].map((item) => (
+            <div key={item.label} className="flex flex-col items-center">
+              <div className="bg-white/80 backdrop-blur-sm border border-primary/30 rounded-xl px-3 py-2 md:px-5 md:py-3 shadow-lg min-w-[60px] md:min-w-[80px]">
+                <span className="text-2xl md:text-4xl font-serif text-secondary font-semibold tabular-nums">
+                  {String(item.value).padStart(2, '0')}
+                </span>
+              </div>
+              <span className="text-[10px] md:text-xs uppercase tracking-wider text-secondary/70 font-sans mt-1 md:mt-2">
+                {item.label}
               </span>
             </div>
-            <span className="text-[10px] md:text-xs uppercase tracking-wider text-secondary/70 font-sans mt-1 md:mt-2">
-              {item.label}
-            </span>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {/* RSVP Button - Positioned below countdown */}
       <div className="relative z-20 mt-6 animate-fade-in-up flex flex-col items-center gap-6">
