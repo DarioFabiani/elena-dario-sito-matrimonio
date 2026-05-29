@@ -94,7 +94,7 @@ const Home: React.FC = () => {
       {/* Countdown Timer - Below image */}
       {isLive ? (
         <div className="relative z-20 mt-8 animate-fade-in-up text-center px-4">
-          <p className="font-display text-4xl md:text-5xl text-secondary">Oggi è il grande giorno!</p>
+          <p className="font-display text-4xl md:text-5xl text-secondary">Oggi Sposi!</p>
         </div>
       ) : (
         <div className="relative z-20 mt-8 animate-fade-in-up flex justify-center gap-3 md:gap-6">
