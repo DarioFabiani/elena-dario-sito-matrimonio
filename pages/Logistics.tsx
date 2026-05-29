@@ -58,11 +58,19 @@ const Logistics: React.FC = () => {
                   <p className="text-gray-800">Google Maps potrebbe suggerire strade provinciali accidentate.</p>
                   <p className="mt-2 font-bold text-gray-800">Itinerario consigliato:</p>
                   <ol className="list-decimal list-inside pl-1 mt-1 text-gray-800">
-                    <li>Inserire destinazione <strong>Palinuro</strong>, SS18Var, uscire a Poderia.</li>
-                    <li>Arrivati a Palinuro, inserire <strong>Marina di Pisciotta</strong>.</li>
+                    <li>
+                      Inserire destinazione <a href="https://maps.app.goo.gl/seovz3GPbKCfqhvR8" target="_blank" rel="noreferrer" className="underline font-semibold text-secondary">Palinuro</a>, SS18Var, uscire a Poderia. Consiglio di impostare questa rotonda come destinazione.
+                    </li>
+                    <li>
+                      Arrivati a Palinuro, inserire <strong>Marina di Pisciotta</strong>.
+                  </li>
+                  <li>
+                    Da Marina di Pisciotta, seguire le indicazioni per Hotel <strong><a href="https://maps.app.goo.gl/EpccmwN7AmC3JYWa9" target="_blank" rel="noreferrer" className="underline font-semibold text-secondary">La Marée</a>,</strong>.
+                  </li>
                   </ol>
                 </div>
-             </div>
+              </div>
+
           </InfoCard>
 
           {/* Accommodation */}

@@ -64,8 +64,8 @@ const TimelineItem = ({ time, title, location, locationUrl, description, icon, i
 
             {details && details.length > 0 && (
               <ul className={`space-y-2${description ? ' mt-4' : ''}`}>
-                {details.map((detail, i) => (
-                  <li key={i} className="flex items-start gap-2 text-gray-800 text-lg leading-relaxed font-serif font-medium">
+                {details.map((detail) => (
+                  <li key={detail} className="flex items-start gap-2 text-gray-800 text-lg leading-relaxed font-serif font-medium">
                     <span className="material-icons text-primary text-base mt-1.5 shrink-0">chevron_right</span>
                     {detail}
                   </li>
@@ -96,7 +96,7 @@ const Details: React.FC = () => {
                 image="https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/lunch_illustration.png"
                 details={[
                   "Presso «La Mareé» per chi è ospite nella struttura.",
-                  "Per le altre persone, rinfresco presso casa degli Sposi."
+                  "Per gli altri ospiti, rinfresco presso casa degli Sposi."
                 ]}
             />
             <TimelineItem
@@ -105,9 +105,9 @@ const Details: React.FC = () => {
                 title="Verso la Chiesa"
                 image="https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/walk_illustration.png"
                 details={[
-                  "15:00 - Navetta da «La Mareé» alla chiesa per chi non è provvisto di auto",
-                  "15:15 – Viaggio dello sposo verso la chiesa, in macchina o a piedi (10/15 min di camminata)",
-                  "15:30 – Uscita di casa della sposa e viaggio verso la chiesa in macchina"
+                  "15:00 - Navetta da «La Mareé» alla chiesa per chi vuole o non è provvisto di auto",
+                  "15:20 – Viaggio dello sposo verso la chiesa, in macchina o a piedi (10/15 min di camminata caldo permettendo)",
+                  "15:50 – Uscita di casa della sposa e viaggio verso la chiesa in macchina"
                 ]}
             />
             <TimelineItem
@@ -117,7 +117,7 @@ const Details: React.FC = () => {
                 location="Chiesa di Santa Maria di Portosalvo"
                 locationUrl={CHURCH_URL}
                 image="https://lh3.googleusercontent.com/aida-public/AB6AXuBrrhdZV5TH25jQJzrAzns-9N3nYBWDU5AbmKTp2ih9lCIpGDj-uUFxaNLkw4RnwO98wfy4w2KQzLi4ee6Ryj2JPQPmcZYlJhJUoABhM5VhE0Jvq-r4frdpKdt8Pjw2od8ReafLN-7kV4L34hRxE5qbUCogkoyZTAuSducLXoZEY7u_LYgy3GMMEdoboNgNWRHZatOs5_olXuBUXukL6IKCDan-Mmos75hW09R2XMB-YM8WbvjTtvK1LDDILTWUuD_jAcotZaJfgIas"
-                description="La cerimonia si svolgerà a Marina di Pisciotta, nella piccola chiesa che si affaccia sul mare."
+                description="La cerimonia si svolgerà a Marina di Pisciotta, nella piccola chiesa che si affaccia sul mare. "
             />
             <TimelineItem
                 time="17:15 – 18:15"
