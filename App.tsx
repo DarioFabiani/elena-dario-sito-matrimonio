@@ -21,7 +21,7 @@ const Navigation = () => {
   useEffect(() => {
     const handleScroll = () => {
       // Order must match the render order
-      const sections = ['home', 'story', 'gallery', 'details', 'logistics', 'registry'];
+      const sections = ['home', 'story', 'gallery', 'logistics', 'details', 'registry'];
       const scrollPosition = window.scrollY + 200;
 
       for (const section of sections) {
@@ -40,8 +40,8 @@ const Navigation = () => {
     { id: 'home', label: 'Home' },
     { id: 'story', label: 'La Storia' },
     { id: 'gallery', label: 'Memorie' },
-    { id: 'details', label: 'Programma' },
     { id: 'logistics', label: 'Info' },
+    { id: 'details', label: 'Programma' },
     { id: 'registry', label: 'Lista Nozze' },
   ];
 
@@ -119,12 +119,12 @@ export default function App() {
           <Gallery onPlayMusic={setMusicTrack} />
         </section>
         
-        <section id="details" className="min-h-screen">
-          <Details />
-        </section>
-
         <section id="logistics" className="min-h-screen">
           <Logistics />
+        </section>
+
+        <section id="details" className="min-h-screen">
+          <Details />
         </section>
         
         <section id="registry" className="min-h-screen">

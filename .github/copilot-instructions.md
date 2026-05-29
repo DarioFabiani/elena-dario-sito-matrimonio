@@ -9,19 +9,21 @@ Single-page React wedding website for Elena & Dario with smooth scroll navigatio
 - **Fixed Navigation**: `App.tsx` contains `<Navigation>` component that's always visible at top
 - **Scroll-based Sections**: Each page component is wrapped in `<section id="...">` in App.tsx
 - **Active State Tracking**: Navigation highlights current section using scroll position + 200px offset
-- **Section Order**: Must match between `navItems` array and render order: `home → story → gallery → details → logistics → rsvp → registry`
+- **Section Order**: Must match between `navItems` array and render order: `home → story → gallery → logistics → details → registry`
 
 ### Password Protection
-- **PasswordGate Component**: Wraps entire app in `App.tsx`
-- Uses `VITE_SITE_PASSWORD` env variable (fallback: `elena-dario-2026`)
+- **PasswordGate Component**: Available in `components/PasswordGate.tsx`, currently **not mounted** in `App.tsx`
+- Uses `VITE_SITE_PASSWORD` env variable (no hardcoded fallback in code)
 - Session-based auth stored in `sessionStorage` under `wedding_auth` key
 - Shows loading state, then either login form or children content
+- To enable it, wrap the app content in `App.tsx` with `<PasswordGate>...</PasswordGate>`
 
 ### Page Structure
 - All pages in `/pages` folder: `Home.tsx`, `Story.tsx`, `Gallery.tsx`, `Details.tsx`, `Logistics.tsx`, `Rsvp.tsx`, `Registry.tsx`
 - Components in `/components` folder: `PasswordGate.tsx`
 - Each page is a standalone component with full-screen min-height (`min-h-screen`)
 - Pages handle their own internal state (e.g., RSVP form steps, gallery lightbox)
+- Current `App.tsx` render flow does **not** include `Rsvp.tsx`
 
 ## Design System
 
@@ -149,3 +151,72 @@ guest_responses (id, guest_id, is_attending, dietary_notes, transport_method,
 - Italian language throughout (labels, placeholders, content)
 - Gallery photos with `spotifyTrackId` trigger music player when clicked
 - Password gate uses sessionStorage - user must re-enter password after closing browser
+
+## Repository Hygiene (Keep / Remove / Ignore)
+
+### Keep Tracked
+- Source code and configs (`App.tsx`, `/pages`, `/components`, `/lib`, `tailwind.config.js`, `vite.config.ts`)
+- SQL migrations in project root (`*-migration.sql`, `rsvp-schema.sql`, `update-views-accommodation.sql`)
+- Documentation files (`README.md`, `SETUP.md`, `DEPLOYMENT.md`, `PASSWORD-PROTECTION.md`)
+
+### Never Commit
+- `.env.local` (already ignored)
+- Build artifacts (`dist/`)
+- Dependencies (`node_modules/`)
+- Local logs (`*.log`)
+
+### Existing Ignore Rules
+- `.gitignore` already covers: `node_modules`, `dist`, `.env*.local`, `*.local`, logs
+- `.vercelignore` already covers local/build noise for deploy packaging
+
+### Practical Cleanup (Local Workspace)
+- Safe to delete local `dist/` anytime (rebuild with `npm run build`)
+- Safe to delete local logs
+- Keep `.env.local` local-only; rotate values if it was ever shared externally
+
+## Security Notes and Hardening
+
+### Current Risk Profile
+- `VITE_SITE_PASSWORD` is client-side only protection and is visible in bundled frontend code by design
+- Supabase anon key is public by design, so data protection depends on strict RLS policies
+- Spotify edge functions currently allow CORS `*` and have no app-level auth/rate limiting
+
+### Recommended Hardening
+1. Prefer real access control at edge/CDN level (Vercel Authentication, Cloudflare Access, or middleware with signed cookie) over client-only password gate.
+2. Restrict Supabase RLS to least privilege for `guests` and `guest_responses`; verify no broad `SELECT` policy leaks all guests.
+3. Add rate limiting to RSVP search and Spotify edge functions to reduce abuse.
+4. For edge functions, replace `Access-Control-Allow-Origin: *` with your production domain list.
+5. Add security headers in `vercel.json`: at minimum `X-Frame-Options`, `Referrer-Policy`, `X-Content-Type-Options`, and a tailored `Content-Security-Policy`.
+6. Run `npm audit` periodically and update vulnerable transitive dependencies (`npm audit fix` found 1 moderate issue in `ws`).
+
+## YouTube Live Streaming Integration
+
+### Recommended UX
+- Add a dedicated `live` section/page only visible near event date/time
+- Show countdown before stream starts
+- When offline/fallback, show a message plus direct YouTube link
+
+### Embed Approach (Simple and Reliable)
+- Use iframe embed format:
+  `https://www.youtube.com/embed/{VIDEO_ID}?autoplay=1&modestbranding=1&rel=0`
+- Example React block:
+
+```tsx
+<iframe
+  src="https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1&modestbranding=1&rel=0"
+  title="Live Wedding Stream"
+  allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
+  allowFullScreen
+  className="w-full aspect-video rounded-2xl border border-primary/20 shadow-xl"
+/>
+```
+
+### YouTube Configuration Checklist
+1. In YouTube Studio, schedule livestream and copy `VIDEO_ID`.
+2. Ensure embed is allowed for the video/channel.
+3. Keep stream visibility as needed (Public/Unlisted). For private guests, prefer unlisted + external access control.
+4. If site uses CSP, allow `https://www.youtube.com` and `https://www.youtube-nocookie.com` for `frame-src`.
+
+### Privacy/Security Considerations
+- If guest privacy is important, avoid exposing the link too early and gate the section with real server-side auth.
+- Do not put YouTube API keys in frontend unless strictly needed; if needed, proxy via edge function.
