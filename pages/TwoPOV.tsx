@@ -233,7 +233,7 @@ const TwoPOV: React.FC = () => {
           </h2>
           <p className="text-gray-600 font-serif text-xl max-w-2xl mx-auto">
             Ogni tavolo del nostro ricevimento raccontava un momento della nostra storia.
-            Clicca su una foto per scoprire come lo abbiamo vissuto ciascuno.
+            Clicca su una foto per scoprire come ciascuno lo ha vissuto.
           </p>
         </div>
 

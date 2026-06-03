@@ -50,7 +50,7 @@ const Story: React.FC = () => {
             </div>
             <h3 className="font-serif text-3xl font-bold text-secondary mb-4">Il Per Sempre</h3>
             <p className="text-gray-800 leading-relaxed text-lg font-medium">
-              Il 30 Maggio 2026, vi invitiamo a festeggiare con noi e celebrare il prossimo capitolo di questa storia.
+              Il 30 Maggio 2026, vi abbiamo invitati a festeggiare con noi e celebrare il prossimo capitolo di questa storia.
             </p>
           </div>
 
