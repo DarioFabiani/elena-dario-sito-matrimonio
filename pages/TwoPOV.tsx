@@ -11,86 +11,86 @@ const cards: CardData[] = [
   {
     title: 'Pianificazione finanziaria',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Pianificazione%20Finanziaria.jpg',
-    lui: `Se c'è una sliding door in questa storia, direi che è proprio questa. Come poteva il destino giocarsi così bene le sue carte, mettendo nella stessa mano quelle giuste?`,
-    lei: `Pensavo "Cambio corso di studio per fare più esami di statistica ed evitare storia economica". In realtà, peggio di storia economica, c'era questo mattone di contabilità da 18 crediti. Quella svista non poteva essere un caso.`,
+    lui: `Se c'è una sliding door in questa storia, direi che è proprio questa. \nCome poteva il destino giocarsi così bene le sue carte, mettendo nella stessa mano quelle giuste?`,
+    lei: `Pensavo "Cambio corso di studio per fare più esami di statistica ed evitare storia economica".\n In realtà, peggio di storia economica, c'era questo mattone di contabilità da 18 crediti.\n Quella svista non poteva essere un caso.`,
   },
   {
     title: 'Casa Science',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Casa%20Science.jpg',
-    lui: `Casa è casa. Casa è dove ti senti accolto. In quei momenti di pandemia, stare bene non era cosa da poco. Io in quella casa però accoglievo una persona che non riuscivo a smettere di guardare.`,
-    lei: `Lì stavo bene. Le lezioni seguite in soggiorno invece che in aula. Un otium letterario a tema data science. Piano piano, in quella casa mi sentivo attratta come da una calamita e finivo sempre più vicina a lui.`,
+    lui: `Casa è casa. Casa è dove ti senti accolto. In quei momenti di pandemia, stare bene non era cosa da poco.\nIo in quella casa però accoglievo una persona che non riuscivo a smettere di guardare.`,
+    lei: `Lì stavo bene. Le lezioni seguite in soggiorno invece che in aula. Un otium letterario a tema data science.\nPiano piano, in quella casa mi sentivo attratta come da una calamita e finivo sempre più vicina a lui.`,
   },
   {
     title: 'Scampagnate',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/bosco%20della%20citta.jpg',
-    lui: `Brevi mattinate. Lunghi sentieri. All'inizio inaspettati, poi così attesi. I primi momenti passati solo io e lei.`,
-    lei: `"Ragazzi, domattina sveglia presto e andiamo a fare una passeggiata. Ci godiamo questa zona gialla finché dura!" L'indomani tutto taceva. L'unico a svegliarsi era sempre lui. Passeggiate lente, a chiacchierare del più e del meno. Era bello uscire a camminare, ma con lui lo era un po' di più.`,
+    lui: `Brevi mattinate. Lunghi sentieri.\n All'inizio inaspettati, poi così attesi. I primi momenti passati solo io e lei.`,
+    lei: `"Ragazzi, domattina sveglia presto e andiamo a fare una passeggiata. Ci godiamo questa zona gialla finché dura!"\n L'indomani tutto taceva. L'unico a svegliarsi era sempre lui. Passeggiate lente, a chiacchierare del più e del meno.\nEra bello uscire a camminare, ma con lui lo era un po' di più.`,
   },
   {
     title: 'Esame sul cinema indipendente',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Esame%20sul%20cinema%20indipendente.jpg',
-    lui: `La magia del cinema! Ci voleva proprio quella… e un po' di analisi. Mi ricordo di quando mi ha lasciato intervistare da solo tutta la fila di persone intente a entrare in biblioteca. Faceva freddo. Ma i dati servivano.`,
-    lei: `Un progetto di idee folli e ambiziose. Infine, in una piovosa sera di gennaio, le nostre dita si sfiorano, una scintilla… e il resto è storia.`,
+    lui: `La magia del cinema! Ci voleva proprio quella… e un po' di analisi.\n Mi ricordo di quando mi ha lasciato intervistare da solo tutta la fila di persone intente a entrare in biblioteca.\n Faceva freddo.\n  Ma i dati servivano.`,
+    lei: `Un progetto di idee folli e ambiziose.\n Infine, in una piovosa sera di gennaio, le nostre dita si sfiorano, una scintilla… e il resto è storia.`,
   },
   {
     title: 'Proiettore',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Proiettore.jpg',
-    lui: `Lo chiamavano l'improvvisatore. Dovevo assolutamente giocarmi qualcosa — non sapevo cosa… Ah sì, un biglietto. Ma dove? Il proiettore! Ma dove!? Nel vano tra la lente e la chiusura. Che lampo di genio!`,
-    lei: `Torno a casa per le vacanze di Natale, accendo il proiettore per iniziare i miei giorni di isolamento con una lista infinita di film. Ma… perché la luce non funziona? Ed era proprio lì la causa: un bigliettino. Non sarà mica che lui provi qualcosa per me?`,
+    lui: `Lo chiamavano l'improvvisatore.\n Dovevo assolutamente giocarmi qualcosa — non sapevo cosa… \n Ah sì, un biglietto.\n Ma dove? Il proiettore!\n Ma dove!? Nel vano tra la lente e la chiusura. \n Che lampo di genio!`,
+    lei: `Torno a casa per le vacanze di Natale, accendo il proiettore per iniziare i miei giorni di isolamento con una lista infinita di film.\n Ma… perché la luce non funziona?\n Ed era proprio lì la causa: un bigliettino.\n Non sarà mica che lui provi qualcosa per me?`,
   },
   {
     title: 'Manicotto',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Manicotto.jpg',
     lui: `Un piccolo regalo fatto a maglia. Per avvicinarci, per avere la scusa di farle capire quanto fosse importante per me.`,
-    lei: `Singolare che lavori a maglia. Chi l'avrebbe mai detto che l'avrebbe usata come scusa per avvicinarmi.`,
+    lei: `Singolare che lavori a maglia.\n Chi l'avrebbe mai detto che l'avrebbe usata come scusa per avvicinarmi.`,
   },
   {
     title: 'Paperinik',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Paperinik.jpg',
-    lui: `Galeotto fu quel papero! Un papero mascherato che adoravamo entrambi ci ha portato al regalo più insolito che abbia mai fatto.`,
+    lui: `Galeotto fu quel papero!\n Un papero mascherato che adoravamo entrambi ci ha portato al regalo più insolito che abbia mai fatto.`,
     lei: `Tendo a emozionarmi per poco ma, credetemi, la barca di Paperinik che può navigare i laghi del Trentino, per me non è affatto poco!`,
   },
   {
     title: 'The first song is f****** epic',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/The%20first%20song%20is.jpg',
-    lui: `Facciamole una playlist. Alternativa. Diversa. La colpirò. Mettiamoci una canzone giapponese indie. Forse sarà lei che colpirà me. Sì, con una padella.`,
+    lui: `Facciamole una playlist. Alternativa. Diversa. La colpirò.\n Mettiamoci una canzone giapponese indie. Forse sarà lei che colpirà me.\n Sì, con una padella.`,
     lei: `Gli ho chiesto di condividere una playlist per conoscerci meglio e per sentirci vicini finché eravamo distanti. Lui in camera sua, io in casa mia. La sua playlist arriva dopo qualche ora. Click, play. Non avevo mai sentito indie giapponese.`,
   },
   {
-    title: 'Pringles alla paprika',
+    title: 'Pringles alla paprika (bonus track)',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Pringles.jpg',
-    lui: `L'improvvisatore è tornato! Manca poco, sta per prendere il treno. Un gesto. Uno! Un biglietto. Sì, di nuovo. Ma dove? Le Pringles! Sì, ma dove!? Dentro? Mmm, mettiamolo attaccato sotto. Signori, in qualche modo è andata.`,
-    lei: `In quei mesi avevo una grande ossessione: le Pringles alla paprika. Eppure, quel tubo regalato prima che prendessi il treno per tornare a casa, non era come tutti gli altri.`,
+    lui: `L'improvvisatore è tornato! Manca poco, sta per prendere il treno.\n Un gesto. Uno! \n Un biglietto. Sì, di nuovo. \n Ma dove? Le Pringles! \n Sì, ma dove!? Dentro? Mmm, mettiamolo attaccato sotto.\n Signori, in qualche modo è andata.`,
+    lei: `In quei mesi avevo una grande ossessione: le Pringles alla paprika.\n Eppure, quel tubo regalato prima che prendessi il treno per tornare a casa, non era come tutti gli altri.`,
   },
   {
     title: 'Old Boy',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Old%20Boy.jpg',
-    lui: `Io volevo andare a vedere un altro film. Eppure questo è stato il primo. Romantico? No. Bello? Sì. Volevo vederlo? Con lei andava bene tutto.`,
-    lei: `Che bello, i cinema hanno riaperto! Vestita carina, mi preparo al primo film in sala insieme. "Dario, dove ceniamo?" "Kebab della stazione." "Ok. E che film?" "Sorpresa!" Pensavo fosse tutto studiato, invece, in fondo, ci siamo sorpresi entrambi. Cruentemente.`,
+    lui: `Io volevo andare a vedere un altro film. Eppure questo è stato il primo.\n Romantico? No.\n Bello? Sì.\n Volevo vederlo? Con lei andava bene tutto.`,
+    lei: `Che bello, i cinema hanno riaperto! Vestita carina, mi preparo al primo film in sala insieme. \n "Dario, dove ceniamo?" "Kebab della stazione."\n "Ok. E che film?" "Sorpresa!" \n Pensavo fosse tutto studiato, invece, in fondo, ci siamo sorpresi entrambi. \n Cruentemente.`,
   },
   {
     title: 'Ferragosto toscano',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Ferragosto%20Toscano.jpg',
-    lui: `Improvvisando si sbaglia. Se doveste avere una macchina del tempo, no. Scegliete il Ferragosto 2021: vedreste una ragazza abituata a lussureggianti banchetti estivi con un kebab in mano davanti alla stazione. Che ce potevo fa'.`,
-    lei: `Era troppo presto per portarlo a Pisciotta, ma non abbastanza per raggiungerlo in Toscana. Ho capito la follia della scelta quando mi ritrovo a vagare per Firenze Santa Maria Novella con un trolley e 40 gradi all'ombra. Però quanto buona era quella schiacciata!`,
+    lui: `Improvvisando si sbaglia.\n Se doveste avere una macchina del tempo, no.\n Scegliete il Ferragosto 2021: vedreste una ragazza abituata a lussureggianti banchetti estivi con un kebab in mano davanti alla stazione.\n  Che ce potevo fa'.`,
+    lei: `Era troppo presto per portarlo a Pisciotta, ma non abbastanza per raggiungerlo in Toscana.\n Ho capito la follia della scelta quando mi ritrovo a vagare per Firenze Santa Maria Novella con un trolley e 40 gradi all'ombra.\n Però quanto buona era quella schiacciata!`,
   },
   {
     title: 'Regali',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Slam%20dunk.jpg',
-    lui: `Se so qualcosa di lei è che è una bugiarda. Le cresce il naso come a Pinocchio. Non so fare i regali, diceva. Eppure un regalo così bello non l'ho mai ricevuto.`,
-    lei: `Doveva essere un libro sulla chimica dei funghi, ma due giorni prima di vederci per Natale decido che non fosse abbastanza. Dopo un pomeriggio di telefonate a tutti i Comics tra Salerno e Napoli, trovo quelle illustrazioni! Lui contento, io ancora penso che è solo la seconda ristampa.`,
+    lui: `Se so qualcosa di lei è che è una bugiarda. Le cresce il naso come a Pinocchio.\n Non so fare i regali, diceva.\n Eppure un regalo così bello non l'ho mai ricevuto.`,
+    lei: `Doveva essere un libro sulla chimica dei funghi, ma due giorni prima di vederci per Natale decido che non fosse abbastanza.\n Dopo un pomeriggio di telefonate a tutti i Comics tra Salerno e Napoli, trovo quelle illustrazioni!\n Lui contento, io ancora penso che è solo la seconda ristampa.`,
   },
   {
     title: 'Bali, non Bari',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Bali,%20non%20bari.jpg',
-    lui: `Scappando a mezzanotte dall'hotel in cui alloggiavamo, per timore di chissà quale sorpresa al mattino. Lì ho capito che avevo una persona a cui tenevo che andava protetta.`,
-    lei: `C'è chi dice che per capire se sei con la persona giusta bisogna fare un Cammino di Santiago. Io dico che un viaggio in Indonesia, come primo fuori dall'Europa, sia l'ideale: se dopo un cocktail di jet lag, digiuni, templi all'alba e scimmiette per strada siete ancora insieme, probabilmente siete con la persona giusta.`,
+    lui: `Scappando a mezzanotte dall'hotel in cui alloggiavamo, per timore di chissà quale sorpresa al mattino.\n Lì ho capito che avevo una persona a cui tenevo che andava protetta.`,
+    lei: `C'è chi dice che per capire se sei con la persona giusta bisogna fare un Cammino di Santiago.\n Io dico che un viaggio in Indonesia, come primo fuori dall'Europa, sia l'ideale: se dopo un cocktail di jet lag, digiuni, templi all'alba e scimmiette per strada siete ancora insieme, probabilmente siete con la persona giusta.`,
   },
   {
     title: 'Le Albere',
     photoUrl: 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Le%20Albere.jpg',
-    lui: `Adesso? No, adesso no. Adesso? No, non voglio fare lo show davanti a tutti. Sta uscendo dal bagno… Adesso? No dai, qualcosa di più romantico. Dario è l'ultimo giorno! Hei.. ma si è svegliata presto di domenica, invitiamola a fare una passeggiata. L'unico in giro è un tizio in bici. Siamo noi due. Ma che fa, guarda un tronco di sotto al ponte. Topo morto? Vabbé facciamo Adesso.`,
-    lei: `Il sentore c'era. Mi aveva strappato di mano il portafoglio prima che potessi vedere di cosa fosse quello scontrino. Cosa mi nascondeva? Dopo mesi di attesa e di domande, dopo un bellissimo weekend di musica e amici, con lo scorrere dell'Adige e lo sfondo delle montagne trentine, c'era lui. In ginocchio e con un anello. Proprio quell'anello che, oggi, ci ha portati qui.`,
+    lui: `Adesso? No, adesso no.\n Adesso? No, non voglio fare lo show davanti a tutti.\n Sta uscendo dal bagno… Adesso? No dai, qualcosa di più romantico.\n Dario è l'ultimo giorno!\n Hei.. ma si è svegliata presto di domenica, invitiamola a fare una passeggiata.\n L'unico in giro è un tizio in bici. \nSiamo noi due. \n Ma che fa, guarda un tronco di sotto al ponte. Topo morto? \n Vabbé facciamo Adesso.`,
+    lei: `Il sentore c'era.\n Mi aveva strappato di mano il portafoglio prima che potessi vedere di cosa fosse quello scontrino. \n Cosa mi nascondeva?\n Dopo mesi di attesa e di domande, dopo un bellissimo weekend di musica e amici, con lo scorrere dell'Adige e lo sfondo delle montagne trentine, c'era lui. \n In ginocchio e con un anello.\n Proprio quell'anello che, oggi, ci ha portati qui.`,
   },
 ];
 
@@ -185,7 +185,9 @@ const PolaroidCard: React.FC<PolaroidCardProps> = ({ card, index }) => {
               <p className="font-sans text-[11px] uppercase tracking-widest text-secondary font-bold mb-1.5">
                 🎩 Lui
               </p>
-              <p className="font-serif text-sm text-gray-700 leading-relaxed">{card.lui}</p>
+              <p className="font-serif text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                {card.lui}
+              </p>
             </div>
 
             <div className="w-full h-px bg-primary/20 my-2 flex-shrink-0" />
@@ -195,7 +197,9 @@ const PolaroidCard: React.FC<PolaroidCardProps> = ({ card, index }) => {
               <p className="font-sans text-[11px] uppercase tracking-widest text-primary font-bold mb-1.5">
                 💍 Lei
               </p>
-              <p className="font-serif text-sm text-gray-700 leading-relaxed">{card.lei}</p>
+              <p className="font-serif text-sm text-gray-700 leading-relaxed whitespace-pre-line">
+                {card.lei}
+              </p>
             </div>
 
             {/* Footer hint — clicca sulla zona FUORI dal testo scorrevole per tornare */}

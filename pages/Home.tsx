@@ -29,7 +29,7 @@ const Home: React.FC = () => {
               src={COVER_IMAGE}
               alt="Elena & Dario — 30 Maggio 2026"
               style={{ gridArea: '1 / 1' }}
-              className={`w-full max-h-[70vh] object-cover transition-opacity duration-1000 ${
+              className={`w-full max-h-[70vh] object-cover object-center lg:object-[center_20%] transition-opacity duration-1000 ${
                 videoEnded ? 'opacity-100' : 'opacity-0'
               }`}
             />
