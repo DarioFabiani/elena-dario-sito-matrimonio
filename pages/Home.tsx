@@ -1,142 +1,90 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-interface TimeLeft {
-  giorni: number;
-  ore: number;
-  minuti: number;
-  secondi: number;
-}
-
-const WEDDING_DATE = new Date('2026-05-30T16:00:00');
-const YOUTUBE_URL = 'https://www.youtube.com/live/MI8sDJLjRAU';
-const IS_PREVIEW_LIVE = new URLSearchParams(globalThis.location.search).get('previewPhase') === 'live';
-const COVER_BEFORE = 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/E+D_base.jpg';
-const COVER_LIVE = 'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/oggi_sposi_wide.png';
+const VIDEO_URL =
+  'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/Bride_twirls_to_final_pose_202605291300.mp4';
+const COVER_IMAGE =
+  'https://hujhpdqrsrldaulwisoq.supabase.co/storage/v1/object/public/wedding-photos/oggi_sposi_wide.png';
 
 const Home: React.FC = () => {
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>({ giorni: 0, ore: 0, minuti: 0, secondi: 0 });
-  const [isLive, setIsLive] = useState(IS_PREVIEW_LIVE);
-
-  useEffect(() => {
-    const calculateTimeLeft = () => {
-      const now = new Date();
-      const difference = WEDDING_DATE.getTime() - now.getTime();
-
-      if (!IS_PREVIEW_LIVE && difference > 0) {
-        setIsLive(false);
-        setTimeLeft({
-          giorni: Math.floor(difference / (1000 * 60 * 60 * 24)),
-          ore: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          minuti: Math.floor((difference / 1000 / 60) % 60),
-          secondi: Math.floor((difference / 1000) % 60),
-        });
-      } else {
-        setIsLive(true);
-      }
-    };
-
-    calculateTimeLeft();
-    const timer = setInterval(calculateTimeLeft, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
+  const [videoEnded, setVideoEnded] = useState(false);
 
   return (
     <div className="relative min-h-screen w-full flex flex-col items-center justify-center pt-24 lg:pt-28 overflow-hidden bg-[#FDFBF7]">
-      
-      {/* Main Image Container with Text Overlay */}
+
+      {/* ── Main Image / Video Container ── */}
       <div className="relative z-10 w-full max-w-screen-2xl mx-auto flex flex-col lg:block items-center justify-center px-6 lg:px-12">
-        {/* Decorative Frame Container */}
+
+        {/* Decorative Frame */}
         <div className="relative">
-          {/* Decorative Outer Border - Offset */}
-          <div className="absolute -inset-4 border border-primary/30 rounded-[2.5rem] lg:rounded-[3.5rem] pointer-events-none transform rotate-1"></div>
-          <div className="absolute -inset-4 border border-primary/30 rounded-[2.5rem] lg:rounded-[3.5rem] pointer-events-none transform -rotate-1"></div>
-          
-          {/* Main Image Box */}
-          <div className="relative rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white">
-            <img 
-              src={isLive ? COVER_LIVE : COVER_BEFORE}
-              alt="Elena & Dario - Save the Date"
-              className="w-full h-auto max-h-[70vh] object-cover object-cover"
+          <div className="absolute -inset-4 border border-primary/30 rounded-[2.5rem] lg:rounded-[3.5rem] pointer-events-none transform rotate-1" />
+          <div className="absolute -inset-4 border border-primary/30 rounded-[2.5rem] lg:rounded-[3.5rem] pointer-events-none transform -rotate-1" />
+
+          {/* Media box — grid overlay: image (base) + video (on top, fades away) */}
+          <div
+            className="relative rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white"
+            style={{ display: 'grid' }}
+          >
+            {/* Static image — fades IN when video ends */}
+            <img
+              src={COVER_IMAGE}
+              alt="Elena & Dario — 30 Maggio 2026"
+              style={{ gridArea: '1 / 1' }}
+              className={`w-full max-h-[70vh] object-cover transition-opacity duration-1000 ${
+                videoEnded ? 'opacity-100' : 'opacity-0'
+              }`}
             />
-            {/* Subtle inner vignette */}
-            <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-[2rem] lg:rounded-[3rem] pointer-events-none"></div>
-            {/* YouTube live button - visible from 16:00 del 30 maggio */}
-            {isLive && (
-              <a
-                href={YOUTUBE_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-2.5 bg-red-600 hover:bg-red-700 text-white font-sans font-semibold text-sm md:text-base px-6 py-3 rounded-full shadow-2xl transition-all hover:scale-105 active:scale-95 animate-fade-in-up whitespace-nowrap"
-              >
-                <span className="material-icons text-xl">play_circle</span>{' '}Segui la diretta
-              </a>
-            )}
+
+            {/* Video — fades OUT when ended */}
+            <video
+              autoPlay
+              muted
+              playsInline
+              onEnded={() => setVideoEnded(true)}
+              style={{ gridArea: '1 / 1' }}
+              className={`w-full max-h-[70vh] object-cover transition-opacity duration-1000 ${
+                videoEnded ? 'opacity-0 pointer-events-none' : 'opacity-100'
+              }`}
+            >
+              <source src={VIDEO_URL} type="video/mp4" />
+            </video>
+
+            {/* Inner vignette */}
+            <div
+              style={{ gridArea: '1 / 1' }}
+              className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-[2rem] lg:rounded-[3rem] pointer-events-none z-10"
+            />
           </div>
         </div>
-        
+
         {/* Wedding Text Overlay */}
         <div className="relative mt-8 lg:mt-0 lg:absolute lg:inset-0 flex items-center justify-center">
           <div className="text-center animate-fade-in-up lg:-mt-[4%]">
-            <h1 className="text-4xl md:text-6xl text-secondary font-display mb-3 md:mb-4">
+            <h1 className="text-4xl md:text-6xl text-secondary font-display mb-1 md:mb-2">
               Elena & Dario
             </h1>
+            <p className="text-2xl md:text-3xl text-primary font-display mb-3 md:mb-4">
+              Sposi!
+            </p>
             <p className="text-xl md:text-2xl text-secondary font-serif mb-1 md:mb-2">
               30 Maggio 2026
             </p>
             <p className="text-lg md:text-xl text-secondary/80 font-serif">
-              Marina di Pisciotta (SA)
+              Pisciotta (SA)
             </p>
           </div>
         </div>
       </div>
 
-      {/* Countdown Timer - Below image */}
-      {isLive ? (
-        <div className="relative z-20 mt-8 animate-fade-in-up text-center px-4">
-          <p className="font-display text-4xl md:text-5xl text-secondary">Oggi Sposi!</p>
-        </div>
-      ) : (
-        <div className="relative z-20 mt-8 animate-fade-in-up flex justify-center gap-3 md:gap-6">
-          {[
-            { value: timeLeft.giorni, label: 'Giorni' },
-            { value: timeLeft.ore, label: 'Ore' },
-            { value: timeLeft.minuti, label: 'Minuti' },
-            { value: timeLeft.secondi, label: 'Secondi' },
-          ].map((item) => (
-            <div key={item.label} className="flex flex-col items-center">
-              <div className="bg-white/80 backdrop-blur-sm border border-primary/30 rounded-xl px-3 py-2 md:px-5 md:py-3 shadow-lg min-w-[60px] md:min-w-[80px]">
-                <span className="text-2xl md:text-4xl font-serif text-secondary font-semibold tabular-nums">
-                  {String(item.value).padStart(2, '0')}
-                </span>
-              </div>
-              <span className="text-[10px] md:text-xs uppercase tracking-wider text-secondary/70 font-sans mt-1 md:mt-2">
-                {item.label}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* RSVP Button - Positioned below countdown */}
-      <div className="relative z-20 mt-6 animate-fade-in-up flex flex-col items-center gap-6">
-        {/* <button 
-          onClick={scrollToRsvp}
-          className="bg-primary hover:bg-[#b08d4b] text-white font-sans uppercase text-xs tracking-[0.2em] px-12 py-4 rounded-full shadow-lg transition-all hover:scale-105 active:scale-95"
-        >
-          Conferma Presenza
-        </button> */}
-        {/* Scroll Indicator aligned with button */}
-        <div className="flex flex-col items-center gap-1 opacity-40 animate-bounce">
-          <span className="text-[10px] uppercase tracking-widest text-secondary font-sans">Scorri</span>
-          <span className="material-icons text-secondary text-lg">keyboard_arrow_down</span>
-        </div>
+      {/* ── Scroll indicator ── */}
+      <div className="relative z-20 mt-10 animate-fade-in-up flex flex-col items-center gap-1 opacity-40 animate-bounce">
+        <span className="text-[10px] uppercase tracking-widest text-secondary font-sans">Scorri</span>
+        <span className="material-icons text-secondary text-lg">keyboard_arrow_down</span>
       </div>
 
-      {/* Background Decor (Subtle) */}
+      {/* Background Decor */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3"></div>
+        <div className="absolute top-0 left-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl translate-x-1/3 translate-y-1/3" />
       </div>
     </div>
   );
